@@ -1,0 +1,37 @@
+___SECTION :: TestSection
+key1value_pair ::
+key2value_pair ::
+key3value_pair :: 0.0
+key4value_pair :: False
+key5value_pair :: False
+key6value_pair ::
+key7value_pair :: 0.0
+key8value_pair :: False
+key9value_pair :: False
+key10value_mapping
+   mapping10_key1 ::
+   mapping10_key2 :: False
+   mapping10_key3 :: 0
+   mapping10_key4 :: False
+   mapping10_key5 ::
+   mapping10_key6 :: 1970-01-01 00:00:00
+key11value_mapping
+   mapping11_key1 ::
+   mapping11_key2 :: False
+key12list :: []
+key13value_pairlist :: []
+key14value_pairlist :: [1,2,3]
+* RepeatedBlk1
+   dummy_blk
+      MyKey1mapping
+         blk_mapping_key1 ::
+         blk_mapping_key2 :: 0.0
+         blk_mapping_key3 :: False
+      MyKey2 :: 0.0
+      MyKey3 ::
+      MyKey4 :: 1970-01-01 00:00:00
+      MyKey5list :: []
+      MyKey6list :: [1,2,3]
+      MyKey7list :: []
+      MyKey8 ::
+___END

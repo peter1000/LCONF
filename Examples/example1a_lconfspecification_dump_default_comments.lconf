@@ -1,0 +1,49 @@
+___SECTION :: TestSection
+
+# Just a Default Comment which can be emitted
+key1value_pair ::
+key2value_pair ::
+key3value_pair :: 0.0
+key4value_pair :: False
+key5value_pair :: False
+key6value_pair ::
+key7value_pair :: 0.0
+key8value_pair :: False
+key9value_pair :: False
+
+# Just a Default Comment which can be emitted: below a Main `Key-Value-Mapping
+key10value_mapping
+   mapping10_key1 ::
+   mapping10_key2 :: False
+   mapping10_key3 :: 0
+   mapping10_key4 :: False
+   mapping10_key5 ::
+   mapping10_key6 :: 1970-01-01 00:00:00
+
+# Just a Default Comment which can be emitted: below a Main `Key-Value-Mapping
+key11value_mapping
+   mapping11_key1 ::
+# Just a Default Comment which can be emitted: below a Main key11value_mapping: item
+   mapping11_key2 :: False
+key12list :: []
+key13value_pairlist :: []
+key14value_pairlist :: [1,2,3]
+
+# Just a Default Comment which can be emitted: below a Repeated Block Identifier
+* RepeatedBlk1
+   dummy_blk
+
+      # Just a Default Comment which can be emitted: below a Block-MyKey1mapping
+      MyKey1mapping
+         blk_mapping_key1 ::
+         blk_mapping_key2 :: 0.0
+      # Just a Default Comment which can be emitted: below a Block-MyKey1mapping: item
+         blk_mapping_key3 :: False
+      MyKey2 :: 0.0
+      MyKey3 ::
+      MyKey4 :: 1970-01-01 00:00:00
+      MyKey5list :: []
+      MyKey6list :: [1,2,3]
+      MyKey7list :: []
+      MyKey8 ::
+___END
