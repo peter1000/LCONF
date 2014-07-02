@@ -67,10 +67,10 @@ SOFTWARE_PY = {
    'coverage': ('coverage', True, '3.7.1', '__version__'),
    'Sphinx': ('sphinx', True, '1.2.2', '__version__'),
    'sphinxcontrib-napoleon': ('sphinxcontrib', True, '', ''),
-   'psutil': ('psutil', True, '2.1.1', '__version__'),
    # Additional Recommended Software
    'SpeedIT': ('SpeedIT', False, '2.0.0', '__version__'),
    'flake8': ('flake8', False, '2.1.0', '__version__'),
+   'psutil': ('psutil', True, '2.1.1', '__version__'),
    'pylint': ('pylint.__pkginfo__', False, '1.2.1', 'version'),
    'retext': ('ReText', False, '4.1.2', 'app_version'),
    'pyenchant': ('enchant', False, '1.6.6', '__version__'),
