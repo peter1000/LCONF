@@ -167,15 +167,14 @@ def _helper_check_list_or_key_value_mapping(section_lines_, num_section_lines_, 
    # to know if we have a `Key-Value-Mapping` or `Key-Value-List` we need to check the next `none comment` line
    next_section_line = section_lines_[next_idx_]
    situation_is_key_value_mapping = True
-   if '#' in next_section_line:
-      tmp_next_idx = next_idx_
-      while (tmp_next_idx < num_section_lines_):
-         next_section_line = section_lines_[tmp_next_idx]
-         if '#' in next_section_line:
-            temp_check_line_indent = len(next_section_line) - len(next_section_line.lstrip())
-            if next_section_line[temp_check_line_indent] == '#':
+   if not next_section_line or '#' in next_section_line:
+      for next_section_line in  section_lines_[next_idx_:-1]:
+         if not next_section_line:
+            continue
+         elif '#' in next_section_line:
+            # check_next_section_line_indent
+            if next_section_line[len(next_section_line) - len(next_section_line.lstrip())] == '#':
                # Comment line: check next
-               tmp_next_idx += 1
                continue
 
          # No Comment Line check and break

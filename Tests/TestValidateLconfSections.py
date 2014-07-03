@@ -434,6 +434,146 @@ ___END
    lconf_validate_source(example_lconf_section_str1)
 
 
+def test_validate_empty_lines_after_key_value_mapping_or_list():
+   """ Tests: test_validate_empty_lines_after_key_value_mapping_or_list
+   """
+   print('::: TEST: test_validate_empty_lines_after_key_value_mapping_or_list()')
+   example_lconf_section_str1 = example_lconf_section_str = r'''___SECTION :: BaseEXAMPLE
+
+# Comment-Line: below: Main `Key :: Value Pair`
+key1value_pair :: value1
+# Comment-Line: below is a `Key :: Value Pair` with an empty value string: which is skipped
+key2value_pair ::
+key3value_pair :: 1234
+key4value_pair :: True
+key5value_pair :: False
+key6value_pair :: None
+key7value_pair :: 1456.984
+key8value_pair :: true
+key9value_pair :: false
+
+# Comment-Line: below is a Main `Key-Value-Mapping`
+key10value_mapping
+
+
+
+
+
+   # Comment-Line:  Key-Value-Mapping items: are `Key :: Value Pairs`
+   mapping10_key1 :: null
+   mapping10_key2 :: true
+   mapping10_key3 :: 123456
+
+
+   mapping10_key4 :: False
+   mapping10_key5 :: None
+   mapping10_key6 :: 0001-01-01-00:00
+
+# Comment-Line: below is a Main `Key-Value-Mapping` with an empty value
+#  the implementation supports: mapping11_key1, mapping11_key2
+key11value_mapping
+
+
+
+
+   # Comment line1 to test `Key-Value-Mapping` recognition
+   # Comment line2 to test `Key-Value-Mapping` recognition
+   mapping11_key1 :: null
+
+
+   mapping11_key2 :: ''
+
+# Comment-Line: below is a Main `Key-Value-List`
+key12list
+
+
+
+   # Comment-Line: List item
+   value_list_item1
+
+
+   value_list_item2
+
+# Comment-Line: below is a Main `Key :: Value-List`
+key13value_pairlist :: [123,8945,278]
+
+# Comment-Line: below is a Main `Key :: Value-Lists` with an empty list: overwriting any defaults
+key14value_pairlist :: []
+
+# Comment-Line: below: `Repeated Mapping-Block Identifier`
+#  this will loose the order of the `Repeated Block-Names` after parsing
+#  but any library must implement an option to loop over it in order as defined in the section
+* RepeatedBlk1
+
+
+
+   # Comment-Line: BLK_OBJ0 uses all 8 possible - defined items
+   BLK_OBJ0
+
+
+
+      # Comment-Line: below Block-Item `Key-Value-Mapping` with all 3 defined items
+      MyKey1mapping
+
+
+
+         # Comment-Line: below Block `Key-Value-Mapping-Item` blk_mapping_key1
+         blk_mapping_key1 :: some text
+
+
+         blk_mapping_key2 :: 12345.99
+         blk_mapping_key3 :: True
+      MyKey2 :: 789.9
+      MyKey3 :: True
+      MyKey4 :: 2014-05-08-13:45
+      MyKey5list :: [test1,test2]
+
+
+      # Comment-Line: Block-Item `Key :: Value-List` with Empty List
+      MyKey6list :: []
+      # Comment-Line: Block-Item `Key :: Value-List`
+      MyKey7list :: [True,False,False,True]
+      MyKey8 :: some text
+   # Comment-Line: BLK_OBJ1 does only use a subset of the defined items:
+   # all others will be set to default values as implemented
+   BLK_OBJ1
+      # Comment-Line: overwrites only 1 Main Key: MyKey2. All other items are default values
+      MyKey2 :: 999.0
+
+   BLK_OBJ2
+      # Comment-Line: below Block-Item `Key-Value-Mapping` with only one defined item of 3: the rest gets default values
+      MyKey1mapping
+         blk_mapping_key3 :: False
+      MyKey2 :: 89456.456
+      MyKey3 :: True
+      MyKey4 :: 1982-02-26-12:15
+      # Comment-Line: Block-Item `Key :: Value-List`
+      MyKey7list
+
+         True
+         False
+         # Comment-Line: test
+         False
+         True
+
+   BLK_OBJ3
+      MyKey1mapping
+         blk_mapping_key1 ::
+         blk_mapping_key2 :: 188.0
+         blk_mapping_key3 :: False
+      MyKey2 :: 789.9
+      MyKey3 :: True
+      MyKey4 :: 2014-05-12-01:52
+      MyKey5list :: [dog,cat]
+      MyKey8 :: just a test
+   # Comment-Line: Repeated Block-Name: will be using all default values
+   BLK_OBJ4
+
+___END
+'''
+   lconf_validate_source(example_lconf_section_str1)
+
+
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 if __name__ == '__main__':
    pass
@@ -462,7 +602,10 @@ if __name__ == '__main__':
 
    test_validate_expect_failure__wrong_commentline_indentation__expect_failure0()
    test_validate_expect_failure__wrong_commentline_indentation__expect_failure1()
-   
+
    test_lconf_validate_one_section_str_expect_failure1()
    test_lconf_validate_one_section_str_expect_failure2()
    test_lconf_validate_one_section_str_expect_failure3()
+
+   test_validate_empty_lines_after_key_value_mapping_or_list()
+
