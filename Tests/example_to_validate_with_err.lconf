@@ -1,0 +1,14 @@
+`Trailing Space Error First Line`
+
+Any other text which is
+not part of the section
+
+
+___SECTION :: Example
+
+# Comment-Line: below: Main `Key :: Value Pair`
+key1value_pair :: value1
+# Comment-Line: below is a `Key :: Value Pair` with an empty value string: which is skipped
+key2value_pair ::   
+key3value_pair ::
+___END

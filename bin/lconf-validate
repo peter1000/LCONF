@@ -1,16 +1,23 @@
 #!/usr/bin/env python3
-""" (c) 2014 `peter1000` https://github.com/peter1000
+""" LCONF validation script
+
+(c) 2014 `peter1000` https://github.com/peter1000
 All Rights Reserved
 
 LCONF is distributed under the terms of the BSD 3-clause license.
 Consult LICENSE.rst or http://opensource.org/licenses/BSD-3-Clause.
 
 """
-import sys
+from sys import (
+   exit as sys_exit,
+   version_info as sys_version_info,
+)
 
-from LCONF import Validator
+from LCONF.validator import main as validator_main
 
-if sys.version_info[:2] < (3, 4):
-   sys.exit('LCONF is only tested with Python 3.4 or higher:\ncurrent version: {0:d}.{1:d}'.format(sys.version_info[:2][0], sys.version_info[:2][1]))
+if sys_version_info[:2] < (3, 4):
+   sys_exit('LCONF is only tested with Python 3.4.1 or higher:\ncurrent version: {0:d}.{1:d}'.format(
+      sys_version_info[:2][0], sys_version_info[:2][1]
+   ))
 
-sys.exit(Validator.main())
+sys_exit(validator_main())

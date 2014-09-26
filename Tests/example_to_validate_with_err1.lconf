@@ -1,0 +1,30 @@
+Missing `Key-Value-Mapping Identifier`
+
+Any other text which is
+not part of the section
+
+
+___SECTION :: Example
+
+# Comment-Line: below: Main `Key :: Value Pair`
+key1value_pair :: value1
+# Comment-Line: below is a `Key :: Value Pair` with an empty value string: which is skipped
+key2value_pair ::
+key3value_pair ::
+key4value_pair :: True
+key5value_pair :: False
+key6value_pair :: None
+key7value_pair :: 1456.984
+key8value_pair :: true
+# Comment-Line: Values can be most characters and also longer lines
+key9value_pair :: different characters # \n * | , & @  https://translate.google.com/ translate ਅਨੁਵਾਦ  翻訳する μεταφράζω
+
+# Comment-Line: below is a Main `Key-Value-Mapping`
+key10value_mapping
+   # Comment-Line:  Key-Value-Mapping items: `Key :: Value Pair`
+   mapping10_key1 :: False
+   mapping10_key2 :: true
+   mapping10_key3 :: 123456
+   
+___END
+

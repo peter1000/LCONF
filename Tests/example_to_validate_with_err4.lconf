@@ -1,0 +1,69 @@
+`Trailing Space Error`
+
+Any other text which is
+not part of the section
+
+
+___SECTION :: Example
+
+# Comment-Line: below: Main `Key :: Value Pair`
+key1value_pair :: value1
+# Comment-Line: below is a `Key :: Value Pair` with an empty value string: which is skipped
+key2value_pair ::
+key3value_pair ::
+key4value_pair :: True
+key5value_pair :: False
+key6value_pair :: None
+key7value_pair :: 1456.984
+key8value_pair :: true
+# Comment-Line: Values can be most characters and also longer lines
+key9value_pair :: different characters # \n * | , & @  https://translate.google.com/ translate ਅਨੁਵਾਦ  翻訳する μεταφράζω
+
+# Comment-Line: below is a Main `Key-Value-Mapping`
+. key10value_mapping
+   # Comment-Line:  Key-Value-Mapping items: `Key :: Value Pair`
+   mapping10_key1 :: False
+   mapping10_key2 :: true
+   mapping10_key3 :: 123456
+
+   # Comment-Line:  Key-Value-Mapping item: `Key :: Value-List`
+   - mapping10_key4_list :: 1,2
+
+   # Comment-Line:  Key-Value-Mapping item: `Key-Value-List`
+   - mapping10_key5_list
+      1
+      2
+
+   # Comment-Line:  Key-Value-Mapping item: `List-Of-Tuples`
+   - mapping10_key6_list |x|y|
+      1,3
+      2,6
+
+   # Comment-Line:  Key-Value-Mapping item: `List-Of-Tuples`
+   - mapping10_key7_list |name|b|c|
+      Tom,     2.0, 3
+      Peter,   2.4, 5
+
+# Comment-Line: below is a Main `Key-Value-Mapping`
+. key11value_mapping
+   # Comment-Line:  Key-Value-Mapping item: `Key :: Value Pair`
+   mapping11_key1 :: /home/examples/
+
+   # Comment-Line:  Key-Value-Mapping item: an other nested `Key-Value-Mapping`
+   . mapping11_key2_mapping
+      # Comment-Line:  nested Key-Value-Mapping item: `Key :: Value Pair`
+      mapping11_key2_nested_mapping_key1 :: 2014-05-08 13:39
+
+      # Comment-Line:  nested Key-Value-Mapping item: `Repeated-Block-Identifier`
+      * mapping11_key2_nested_mapping_key2_block_identifier
+
+         # Comment-Line: `Block-Name1`
+         sky_blue_blk_name1
+            # Comment-Line:  Block items: `Key :: Value Pair`
+            blk_item_red :: 135
+            blk_item_green :: 206
+            blk_item_blue :: 235 
+
+      # Comment-Line:  nested Key-Value-Mapping item: `Key :: Value Pair`
+      mapping11_key2_nested_mapping_key3 :: car
+___END
