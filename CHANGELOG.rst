@@ -12,6 +12,7 @@ Fixes/Other Changes:
 --------------------
 
    - deleted wrong double line in README.rst
+   - some code style adjustments
 
 
 Version 6.0.0     2014-09-26

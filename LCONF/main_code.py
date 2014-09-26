@@ -63,7 +63,7 @@ Functions
 from collections import OrderedDict
 import copy
 from datetime import datetime
-from os import path
+from os.path import isfile as path_isfile
 
 from LCONF.lconf_structure_classes import (
    Blk,
@@ -622,7 +622,7 @@ def lconf_validate_file(path_to_lconf_file):
    :return: (bool) True if success else raises an error
    :raise Err:
    """
-   if not path.isfile(path_to_lconf_file):
+   if not path_isfile(path_to_lconf_file):
       raise Err('lconf_validate_file', [
          'Input path seems not to be a file:'
          '   <{}>'.format(path_to_lconf_file)
