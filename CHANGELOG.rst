@@ -5,6 +5,15 @@ Release History
 
 .. _whats-new:
 
+Version 6.0.1     xxxx-xx-xx
+============================
+
+Fixes/Other Changes:
+--------------------
+
+   - deleted wrong double line in README.rst
+
+
 Version 6.0.0     2014-09-26
 ============================
 
