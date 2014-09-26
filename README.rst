@@ -74,8 +74,6 @@ The latest documentation can be found online at `<http://packages.python.org/LCO
             color :: Orange
    ___END
 
-The latest documentation can be found online at `<http://packages.python.org/LCONF>`_.
-
 
 Requirements
 ============
