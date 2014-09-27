@@ -7,10 +7,9 @@ setup / install / distribute
 from copy import deepcopy
 from ctypes.util import find_library as ctypes_util_find_library
 from inspect import (
-   getfile as inspect_getfile,
    currentframe as inspect_currentframe,
+   getfile as inspect_getfile,
 )
-from shutil import rmtree as shutil_rmtree
 from os import (
    listdir as os_listdir,
    remove as os_remove,
@@ -24,6 +23,7 @@ from os.path import (
    join as path_join,
    splitext as path_splitext,
 )
+from shutil import rmtree as shutil_rmtree
 from sys import (
    argv as sys_argv,
    exit as sys_exit,
