@@ -13,6 +13,10 @@ Fixes/Other Changes:
 
    - deleted wrong double line in README.rst
    - some code style adjustments
+   - updated tested python version to: 3.4.2rc1
+   - Required Software: setuptools >= 6.0.1
+
+
 
 
 Version 6.0.0     2014-09-26
