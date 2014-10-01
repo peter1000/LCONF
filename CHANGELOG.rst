@@ -5,6 +5,15 @@ Release History
 
 .. _whats-new:
 
+Version 6.0.2     2014-10-01
+============================
+
+Fixes/Other Changes:
+--------------------
+
+   - updated requirement: PSphinxTheme>=2.0.0
+
+
 Version 6.0.1     2014-09-30
 ============================
 
@@ -14,7 +23,7 @@ Fixes/Other Changes:
    - deleted wrong double line in README.rst
    - some code style adjustments
    - updated tested python version to: 3.4.2rc1
-   - Required Software: 
+   - Required Software:
 
       - setuptools >= 6.0.2
       - PSphinxTheme >= 1.4.0

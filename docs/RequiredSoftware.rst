@@ -33,7 +33,7 @@ Required Software
 
    - `<http://nedbatchelder.com/code/coverage>`_
 
-- PSphinxTheme >= 1.4.0  (for documentation generation)
+- PSphinxTheme >= 2.0.0  (for documentation generation)
 
    - `<https://github.com/peter1000/PSphinxTheme>`_
 
@@ -44,7 +44,7 @@ Additional Recommended Software Python
 - PySpeedIT >=1.0.6  (A collection of: Benchmark-IT, Profile-IT, Line-Memory-Profile-IT, Disassemble-IT.)
 
    - `<https://github.com/peter1000/PySpeedIT>`_
-   
+
 - flake8 >= 2.2.3  (modular source code checker: pep8, pyflakes and Ned Batchelder's McCabe script)
 
    - `<http://bitbucket.org/tarek/flake8>`_
@@ -61,7 +61,7 @@ Additional Recommended Software Python
 
    - `<https://pypi.python.org/pypi/pip/>`_
    - `<https://github.com/pypa/pip/>`_
-   
+
 
 Other Recommended Software
 ==========================

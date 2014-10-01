@@ -121,7 +121,7 @@ keep_warnings = True
 # ===========================================================================================================================
 
 # set_psphinxtheme: html_theme_path, html_theme, needs_sphinx
-html_theme_path, html_theme, needs_sphinx = set_psphinxtheme('p-greencloud')
+html_theme_path, html_theme, needs_sphinx = set_psphinxtheme('p-green')
 
 # [optional] overwrite some of the default options
 html_theme_options = {}
