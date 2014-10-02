@@ -53,7 +53,6 @@ from LCONF.main_code import (
 from LCONF.transform import (
    lconf_to_int,
    lconf_to_float,
-   lconf_to_number,
 )
 from LCONF.utils import Err
 
@@ -522,7 +521,7 @@ def test_lconf_section_splitlines__limited_number_of_blocks__expect_failure1():
          Blk([
             ('#1', '# Comment-Line: below Block-Item'),
             ('blk_key1', ''),
-            ('blk_key2', 9999.999, lconf_to_number),
+            ('blk_key2', 9999.999, lconf_to_float),
          ])
       )),
       ('key', '')
@@ -563,7 +562,7 @@ def test_lconf_section_splitlines__limited_number_of_blocks__expect_failure2():
          Blk([
             ('#1', '# Comment-Line: below Block-Item'),
             ('blk_key1', ''),
-            ('blk_key2', 9999.999, lconf_to_number),
+            ('blk_key2', 9999.999, lconf_to_float),
          ])
       )),
       ('key', '')
@@ -602,7 +601,7 @@ def test_lconf_section_splitlines__trailing_space__expect_failure():
    lconf_section__template_obj = Root([
       ('#1', '# Comment-Line'),
       ('key1value_pair', ''),
-      ('key2value_pair', 9999.999, lconf_to_number),
+      ('key2value_pair', 9999.999, lconf_to_float),
       ('key3value_pair', '')
    ])
 

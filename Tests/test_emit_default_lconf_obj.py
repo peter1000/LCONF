@@ -33,13 +33,13 @@ from LCONF.main_code import (
    LCONF_DEFAULT,
    LCONF_NO,
    LCONF_YES,
-   lconf_emit__default_obj,
+   lconf_emit_default_obj,
    lconf_section_splitlines,
    lconf_validate_one_section_str,
 )
 from LCONF.transform import (
    lconf_to_int,
-   lconf_to_number,
+   lconf_to_float,
 )
 
 # noinspection PyUnresolvedReferences,PyUnresolvedReferences
@@ -67,7 +67,7 @@ def test_lconf_emit_default_obj__ok0():
       ('#4', '# Comment-Line: `Key :: Value Pair`'),
       ('registered', ''),
    ])
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Test Example1',
       onelinelists=LCONF_DEFAULT,
@@ -84,31 +84,31 @@ def test_lconf_emit_default_obj__ok0():
 
    lconf_validate_one_section_str(lconf_section_raw_str)
 
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Test Example1',
       onelinelists=LCONF_NO,
       with_comments=True
    )
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Test Example1',
       onelinelists=LCONF_YES,
       with_comments=True
    )
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Test Example1',
       onelinelists=LCONF_DEFAULT,
       with_comments=False
    )
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Test Example1',
       onelinelists=LCONF_NO,
       with_comments=False
    )
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Test Example1',
       onelinelists=LCONF_YES,
@@ -136,7 +136,7 @@ def test_lconf_emit_default_obj__ok1():
       ('#4', '# Comment-Line: `Key :: Value Pair`'),
       ('registered', ''),
    ])
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Test Example1',
       onelinelists=LCONF_DEFAULT,
@@ -167,7 +167,7 @@ def test_lconf_emit_default_obj__ok2():
       ('interests', KVList(False, [])),
       ('registered', ''),
    ])
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Test Example1',
       onelinelists=LCONF_DEFAULT,
@@ -182,31 +182,31 @@ def test_lconf_emit_default_obj__ok2():
 
    lconf_validate_one_section_str(lconf_section_raw_str)
 
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Test Example1',
       onelinelists=LCONF_DEFAULT,
       with_comments=True
    )
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Test Example1',
       onelinelists=LCONF_NO,
       with_comments=True
    )
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Test Example1',
       onelinelists=LCONF_YES,
       with_comments=True
    )
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Test Example1',
       onelinelists=LCONF_NO,
       with_comments=False
    )
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Test Example1',
       onelinelists=LCONF_YES,
@@ -224,11 +224,11 @@ def test_lconf_emit_default_obj__ok3():
       ('last', 'Smith'),
       ('sex', 'm'),
       ('age', '39', lconf_to_int),
-      ('salary', '7000', lconf_to_number),
+      ('salary', '7000', lconf_to_float),
       ('interests', KVList(False, ['golf', 'reading', 'investments'])),
       ('registered', 'true'),
    ])
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Test Example1',
       onelinelists=LCONF_DEFAULT,
@@ -253,7 +253,7 @@ def test_lconf_emit_default_obj__ok4():
    lconf_section__template_obj = Root([
       ('interests', KVList(False, ['golf', 'reading', 'investments'])),
    ])
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Example1',
       onelinelists=LCONF_YES,
@@ -274,7 +274,7 @@ def test_lconf_emit_default_obj__ok5():
    lconf_section__template_obj = Root([
       ('interests', KVList(True, ['golf', 'reading', 'investments'])),
    ])
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Example1',
       onelinelists=LCONF_NO,
@@ -299,7 +299,7 @@ def test_lconf_emit_default_obj__ok6():
          ('mapping_key1', 'Some long sentence'),
       ])),
    ])
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Example1',
       onelinelists=LCONF_NO,
@@ -322,7 +322,7 @@ def test_lconf_emit_default_obj__ok7():
    # Main `Section-Template OBJ: type: Root
    lconf_section__template_obj = get_lconf_section__base_example_template_obj()
 
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Example1',
       onelinelists=LCONF_DEFAULT,
@@ -338,31 +338,31 @@ def test_lconf_emit_default_obj__ok7():
 
    section_lines, section_name = lconf_section_splitlines(lconf_section_raw_str, validate_first_line=False)
 
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Example1',
       onelinelists=LCONF_NO,
       with_comments=True
    )
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Example1',
       onelinelists=LCONF_YES,
       with_comments=True
    )
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Example1',
       onelinelists=LCONF_DEFAULT,
       with_comments=False
    )
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Example1',
       onelinelists=LCONF_NO,
       with_comments=False
    )
-   lconf_section_raw_str = lconf_emit__default_obj(
+   lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Example1',
       onelinelists=LCONF_YES,

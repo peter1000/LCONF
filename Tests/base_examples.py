@@ -32,7 +32,6 @@ from LCONF.transform import (
    lconf_to_bool,
    lconf_to_int,
    lconf_to_float,
-   lconf_to_number,
    lconf_to_pathexpanduser,
    lconf_to_datetime,
 )
@@ -51,7 +50,7 @@ def get_lconf_section__base_example_template_obj():
       ('#3', '# Comment-Line: below is a `Key :: Value Pair` with an empty value string: which is skipped'),
       ('key2value_pair', ''),
       ('#4', '# Comment-Line: Using a Transform Function'),
-      ('key3value_pair', 0.0, lconf_to_number),
+      ('key3value_pair', 0.0, lconf_to_float),
       ('key4value_pair', False, lconf_to_bool),
       ('key5value_pair', True, lconf_to_bool),
       ('key6value_pair', ''),
@@ -95,7 +94,7 @@ def get_lconf_section__base_example_template_obj():
          ('mapping10_key7_list', ListOT(('name', 'b', 'c'), [
             ('something', 11, 1234),
             ('something2', 9999, 9999)
-         ]), (None, lconf_to_number, lconf_to_int)),
+         ]), (None, lconf_to_float, lconf_to_int)),
       ])),
 
       # `Key-Value-Mapping: type: KVMap
@@ -172,7 +171,7 @@ def get_lconf_section__base_example_template_obj():
             ('#42', '# Comment-Line: below Block-Item `Key-Value-Mapping` with all 4 defined items'),
             ('MyKey1_mapping', KVMap([
                ('blk_mapping_key1', ''),
-               ('blk_mapping_key2', 9999.999, lconf_to_number),
+               ('blk_mapping_key2', 9999.999, lconf_to_float),
                ('blk_mapping_key3', False, lconf_to_bool),
 
                # `Key-Value-Mapping: type: KVMap
@@ -189,7 +188,7 @@ def get_lconf_section__base_example_template_obj():
                   ('#48', '# Comment-Line:  Block-Item: an other deep nested `Repeated-Block-Identifier`'),
                   ('Nested Repeated Block Identifier', BlkI(-1, -1,
                      Blk([
-                        ('block-item_key1', 99999.0, lconf_to_number),
+                        ('block-item_key1', 99999.0, lconf_to_float),
                         ('block-item_key2_list', KVList(True, []), lconf_to_bool),
                         ('block-item_key3_list', ListOT(('name', 'height', 'weight'), []),
                         (None, lconf_to_int, lconf_to_int)),
@@ -199,7 +198,7 @@ def get_lconf_section__base_example_template_obj():
             ])),
 
             ('#49', ''),
-            ('MyKey2', 99999.9, lconf_to_number),
+            ('MyKey2', 99999.9, lconf_to_float),
             ('MyKey3', False, lconf_to_bool),
             ('MyKey4', 'GREAT LIFE'),
 

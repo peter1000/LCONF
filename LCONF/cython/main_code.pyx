@@ -54,7 +54,7 @@ Functions
 .. autofunction:: lconf_parse_section
 .. autofunction:: lconf_parse_section_extract_by_name
 .. autofunction:: lconf_emit
-.. autofunction:: lconf_emit__default_obj
+.. autofunction:: lconf_emit_default_obj
 .. autofunction:: lconf_dict_to_lconf
 .. autofunction:: lconf_to_ordered_native_type
 .. autofunction:: lconf_to_native_type
@@ -63,7 +63,7 @@ Functions
 from collections import OrderedDict
 import copy
 from datetime import datetime
-from os import path
+from os.path import isfile as path_isfile
 
 from LCONF.lconf_structure_classes import (
    Blk,
@@ -622,7 +622,7 @@ def lconf_validate_file(path_to_lconf_file):
    :return: (bool) True if success else raises an error
    :raise Err:
    """
-   if not path.isfile(path_to_lconf_file):
+   if not path_isfile(path_to_lconf_file):
       raise Err('lconf_validate_file', [
          'Input path seems not to be a file:'
          '   <{}>'.format(path_to_lconf_file)
@@ -1511,7 +1511,7 @@ def _output_helper_emit__default_obj(result_, key_, item_value_, onelinelists_, 
          result_.append('{}{} :: {}'.format(indent, key_, item_value_))
 
 
-def lconf_emit__default_obj(lconf_section__template_obj, section_name, onelinelists=LCONF_DEFAULT, with_comments=True):
+def lconf_emit_default_obj(lconf_section__template_obj, section_name, onelinelists=LCONF_DEFAULT, with_comments=True):
    """ Return a section_string from a none parsed lconf_section_obj
 
    :param lconf_section__template_obj: (obj) instance of main section template object which has all the info: inclusive any

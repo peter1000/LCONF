@@ -9,17 +9,11 @@ This module provides ready Transform and TypeConversion functions for casting.
 
 .. seealso:: :ref:`Value Transformation <value-transformation>`
 
-.. todo::
-
-   maybe change code for `lconf_to_float`, `lconf_to_number` to use python float to validate
-
-
 Functions
 =========
 .. autofunction:: lconf_to_bool
 .. autofunction:: lconf_to_int
 .. autofunction:: lconf_to_float
-.. autofunction:: lconf_to_number
 .. autofunction:: lconf_to_pathexpanduser
 .. autofunction:: lconf_to_datetime
 
@@ -75,61 +69,41 @@ def lconf_to_int(int_str, extra_err_info):
    ])
 
 
-def lconf_to_float(float_str, extra_err_info):
-   """ Return a float of the input float_str
-
-   :param float_str: (str) string of a number: must contain only digits and exact 1 dot plus optional a leading - (minus
-      sign)
-   :param extra_err_info: (str) any additional info which will be printed if an error is raised: e.g line number, original
-      line ect..
-
-   :return: (float) conversion of the input float_str
-   :raise Err:
-   """
-   if '.' in float_str:
-      before_dot, after_dot = float_str.split('.', 1)
-      # check leading -
-      if before_dot[0] == '-':
-         if before_dot[1:].isdigit() and after_dot.isdigit():
-            return float(float_str)
-      elif before_dot.isdigit() and after_dot.isdigit():
-         return float(float_str)
-   raise Err('float_str', [
-      'float_str must contain only digits and exact 1 dot plus optional a leading - (minus sign).  We got: <{}>'.format(
-         float_str
-      ),
-      '    extra_err_info: {}'.format(extra_err_info)
-   ])
-
-
-def lconf_to_number(number_str, extra_err_info):
+def lconf_to_float(number_str, extra_err_info):
    """ Return a float of the input number_str
 
-   :param number_str: (str) string of a number: only digits and maximum one dot plus optional a leading - (minus sign)
+   :param number_str: (str) string of a number: must contain a valid number to be cast to python float()
+
+      .. python-example:: Taken from the python documentation
+
+         .. code-block:: python3
+
+            >>> float('+1.23')
+            1.23
+            >>> float('   -12345\\n')
+            -12345.0
+            >>> float('1e-003')
+            0.001
+            >>> float('+1E6')
+            1000000.0
+            >>> float('-Infinity')
+            -inf
+
    :param extra_err_info: (str) any additional info which will be printed if an error is raised: e.g line number, original
       line ect..
 
    :return: (float) conversion of the input number_str
    :raise Err:
    """
-   # check leading -
-   if number_str[0] == '-':
-      tmp_number_str = number_str[1:]
-   else:
-      tmp_number_str = number_str
-
-   if tmp_number_str.isdigit():
+   try:
       return float(number_str)
-   elif '.' in tmp_number_str:
-      before_dot, after_dot = tmp_number_str.split('.', 1)
-      if before_dot.isdigit() and after_dot.isdigit():
-         return float(number_str)
-   raise Err('lconf_to_number', [
-      'number_str must contain only digits and maximum 1 dot plus optional a leading - (minus sign).  We got: <{}>'.format(
-         lconf_to_number
-      ),
-      '    extra_err_info: {}'.format(extra_err_info)
-   ])
+   except ValueError as err:
+      raise Err('lconf_to_float', [
+         'number_str must contain a valid number to be cast to python float().  We got: <{}>'.format(
+            number_str
+         ),
+         '    extra_err_info: {}'.format(extra_err_info)
+      ])
 
 
 def lconf_to_pathexpanduser(path_str, extra_err_info):

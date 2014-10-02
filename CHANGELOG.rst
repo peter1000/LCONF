@@ -5,13 +5,20 @@ Release History
 
 .. _whats-new:
 
-Version 6.0.2     2014-10-01
+Version 6.1.0     2014-10-02
 ============================
 
 Fixes/Other Changes:
 --------------------
 
    - updated requirement: PSphinxTheme>=2.0.0
+   - removed wrong double underscore in: `main_code.lconf_emit__default_obj` renamed to `lconf_emit_default_obj`
+
+   - changes in module: :py:mod:`LCONF.transform`
+      removed function: `lconf_to_number` use instead :py:func:`LCONF.transform.lconf_to_float`
+
+   - changes in :py:func:`LCONF.transform.lconf_to_float`
+      uses now python cast: `float()` directly which includes more valid number strings e.g: `1.1111111111111111e-11`
 
 
 Version 6.0.1     2014-09-30

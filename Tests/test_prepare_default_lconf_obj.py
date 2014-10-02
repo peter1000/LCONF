@@ -38,7 +38,7 @@ from LCONF.transform import (
    lconf_to_bool,
    lconf_to_datetime,
    lconf_to_int,
-   lconf_to_number,
+   lconf_to_float,
    lconf_to_pathexpanduser,
 )
 
@@ -96,7 +96,7 @@ def test_lconf_prepare_default_obj__ok1():
       ('last', ''),
       ('sex', ''),
       ('age', '', lconf_to_int),
-      ('salary', 0.0, lconf_to_number),
+      ('salary', 0.0, lconf_to_float),
       ('#3', '# Comment-Line: `Key-Value-List`'),
       ('interests', KVList(True, [])),
       ('#4', '# Comment-Line: `Key :: Value Pair`'),
@@ -125,7 +125,7 @@ def test_lconf_prepare_default_obj__ok2():
       ('last', ''),
       ('sex', ''),
       ('age', '', lconf_to_int),
-      ('salary', 0.0, lconf_to_number),
+      ('salary', 0.0, lconf_to_float),
       ('#3', '# Comment-Line: `Key-Value-Mapping`'),
       ('favorites', KVMap([
          ('food', ''),

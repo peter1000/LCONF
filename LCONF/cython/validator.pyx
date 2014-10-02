@@ -9,7 +9,7 @@ This module is used by the **script** lconf-validate`: The LCONF validation scri
 """
 import argparse
 from argparse import RawDescriptionHelpFormatter
-import sys
+from sys import exit as sys_exit
 
 from LCONF.main_code import lconf_validate_file
 
@@ -37,7 +37,7 @@ def parse_commandline():
    args = main_parser.parse_args()
    if not args.in_files:
       main_parser.print_help()
-      sys.exit()
+      sys_exit()
 
    return args
 

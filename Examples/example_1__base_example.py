@@ -40,7 +40,7 @@ from LCONF.lconf_structure_classes import (
 from LCONF.main_code import (
    LCONF_DEFAULT,
    lconf_emit,
-   lconf_emit__default_obj,
+   lconf_emit_default_obj,
    lconf_parse_section_extract_by_name,
    lconf_prepare_and_parse_section,
    lconf_prepare_default_obj,
@@ -53,7 +53,6 @@ from LCONF.transform import (
    lconf_to_datetime,
    lconf_to_int,
    lconf_to_float,
-   lconf_to_number,
    lconf_to_pathexpanduser,
 )
 
@@ -68,7 +67,7 @@ lconf_section__base_example_template_obj = Root([
    ('#3', '# Comment-Line: below is a `Key :: Value Pair` with an empty value string: which is skipped'),
    ('key2value_pair', ''),
    ('#4', '# Comment-Line: Using a Transform Function'),
-   ('key3value_pair', 0.0, lconf_to_number),
+   ('key3value_pair', 0.0, lconf_to_float),
    ('key4value_pair', False, lconf_to_bool),
    ('key5value_pair', True, lconf_to_bool),
    ('key6value_pair', ''),
@@ -112,7 +111,7 @@ lconf_section__base_example_template_obj = Root([
       ('mapping10_key7_list', ListOT(('name', 'b', 'c'), [
          ('something', 11, 1234),
          ('something2', 9999, 9999)
-      ]), (None, lconf_to_number, lconf_to_int)),
+      ]), (None, lconf_to_float, lconf_to_int)),
    ])),
 
    # `Key-Value-Mapping: type: KVMap
@@ -189,7 +188,7 @@ lconf_section__base_example_template_obj = Root([
          ('#42', '# Comment-Line: below Block-Item `Key-Value-Mapping` with all 4 defined items'),
          ('MyKey1_mapping', KVMap([
             ('blk_mapping_key1', ''),
-            ('blk_mapping_key2', 9999.999, lconf_to_number),
+            ('blk_mapping_key2', 9999.999, lconf_to_float),
             ('blk_mapping_key3', False, lconf_to_bool),
 
             # `Key-Value-Mapping: type: KVMap
@@ -206,7 +205,7 @@ lconf_section__base_example_template_obj = Root([
                ('#48', '# Comment-Line:  Block-Item: an other deep nested `Repeated-Block-Identifier`'),
                ('Nested Repeated Block Identifier', BlkI(-1, -1,
                   Blk([
-                     ('block-item_key1', 99999.0, lconf_to_number),
+                     ('block-item_key1', 99999.0, lconf_to_float),
                      ('block-item_key2_list', KVList(True, []), lconf_to_bool),
                      ('block-item_key3_list', ListOT(('name', 'height', 'weight'), []),
                      (None, lconf_to_int, lconf_to_int)),
@@ -216,7 +215,7 @@ lconf_section__base_example_template_obj = Root([
          ])),
 
          ('#49', ''),
-         ('MyKey2', 99999.9, lconf_to_number),
+         ('MyKey2', 99999.9, lconf_to_float),
          ('MyKey3', False, lconf_to_bool),
          ('MyKey4', 'GREAT LIFE'),
 
@@ -463,7 +462,7 @@ def main():
    print('  lconf_parse_obj.has_comments: ', lconf_parse_obj.has_comments)
 
    # EXAMPLE: EMIT DEFAULT OBJ
-   lconf_section_emitted_default_obj_str = lconf_emit__default_obj(
+   lconf_section_emitted_default_obj_str = lconf_emit_default_obj(
       lconf_section__base_example_template_obj,
       'EMITTED BaseEXAMPLE',
       onelinelists=LCONF_DEFAULT,

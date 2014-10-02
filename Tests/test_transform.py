@@ -31,7 +31,6 @@ from LCONF.transform import (
    lconf_to_bool,
    lconf_to_int,
    lconf_to_float,
-   lconf_to_number,
    lconf_to_pathexpanduser,
    lconf_to_datetime
 )
@@ -79,7 +78,7 @@ def test_cast__lconf_to_float__expect_failure():
    """ Tests: test_cast__lconf_to_float__expect_failure
    """
    print('::: TEST: test_cast__lconf_to_float__expect_failure()')
-   test_value = '12345'
+   test_value = '1k2345'
    lconf_to_float(test_value, test_value)
 
 
@@ -117,25 +116,6 @@ def test_cast__lconf_to_float__expect_failure5():
    print('::: TEST: test_cast__lconf_to_float__expect_failure5()')
    test_value = '12345.0m134'
    lconf_to_float(test_value, test_value)
-
-
-@nose_raises(Err)
-def test_cast__lconf_to_number__expect_failure():
-   """ Tests: test_cast__lconf_to_number__expect_failure
-   """
-   print('::: TEST: test_cast__lconf_to_number__expect_failure()')
-   test_value = '12345l'
-   lconf_to_number(test_value, test_value)
-
-
-@nose_raises(Err)
-def test_cast__lconf_to_number__expect_failure1():
-   """ Tests: test_cast__lconf_to_number__expect_failure1
-   """
-   print('::: TEST: test_cast__lconf_to_number__expect_failure1()')
-
-   test_value = '12345.123m4'
-   lconf_to_number(test_value, test_value)
 
 
 @nose_raises(Err)
@@ -189,12 +169,21 @@ def test_cast__lconf_to_int():
    ok_(isinstance(lconf_to_int(test_value, test_value), int), msg=None)
    test_value = '9856123456789'
    ok_(isinstance(lconf_to_int(test_value, test_value), int), msg=None)
+   eq_(lconf_to_int(test_value, test_value), 9856123456789, msg=None)
    test_value = '-1234'
    ok_(isinstance(lconf_to_int(test_value, test_value), int), msg=None)
    test_value = '-012345'
    ok_(isinstance(lconf_to_int(test_value, test_value), int), msg=None)
    test_value = '-9856123456789'
    ok_(isinstance(lconf_to_int(test_value, test_value), int), msg=None)
+   eq_(lconf_to_int(test_value, test_value), -9856123456789, msg=None)
+   test_value = '-9856123456789454326526986957054678588524573046472685674286049426748692487326864209401319467586728573829587'
+   ok_(isinstance(lconf_to_int(test_value, test_value), int), msg=None)
+   eq_(
+      lconf_to_int(test_value, test_value), 
+      -9856123456789454326526986957054678588524573046472685674286049426748692487326864209401319467586728573829587, 
+      msg=None
+   )
 
 
 def test_cast__lconf_to_float():
@@ -206,6 +195,7 @@ def test_cast__lconf_to_float():
    test_value = '12345.000001234'
    ok_(isinstance(lconf_to_float(test_value, test_value), float), msg=None)
    test_value = '0000012345.000001234'
+   eq_(lconf_to_float(test_value, test_value), 12345.000001234, msg=None)
    ok_(isinstance(lconf_to_float(test_value, test_value), float), msg=None)
    test_value = '-12345.0'
    ok_(isinstance(lconf_to_float(test_value, test_value), float), msg=None)
@@ -213,20 +203,21 @@ def test_cast__lconf_to_float():
    ok_(isinstance(lconf_to_float(test_value, test_value), float), msg=None)
    test_value = '-0000012345.000001234'
    ok_(isinstance(lconf_to_float(test_value, test_value), float), msg=None)
-
-
-def test_cast__lconf_to_number():
-   """ Tests: test_cast__lconf_to_number
-   """
-   print('::: TEST: test_cast__lconf_to_number()')
-   test_value = '12345'
-   ok_(isinstance(lconf_to_number(test_value, test_value), float), msg=None)
-   test_value = '12345.000001234'
-   ok_(isinstance(lconf_to_number(test_value, test_value), float), msg=None)
-   test_value = '-12345'
-   ok_(isinstance(lconf_to_number(test_value, test_value), float), msg=None)
-   test_value = '-12345.000001234'
-   ok_(isinstance(lconf_to_number(test_value, test_value), float), msg=None)
+   eq_(lconf_to_float(test_value, test_value), -12345.000001234, msg=None)
+   test_value = '+1.23'
+   ok_(isinstance(lconf_to_float(test_value, test_value), float), msg=None)
+   eq_(lconf_to_float(test_value, test_value), 1.23, msg=None)
+   test_value = '   -12345\n'
+   ok_(isinstance(lconf_to_float(test_value, test_value), float), msg=None)
+   eq_(lconf_to_float(test_value, test_value), -12345.0, msg=None)
+   test_value = '1e-003'
+   ok_(isinstance(lconf_to_float(test_value, test_value), float), msg=None)
+   eq_(lconf_to_float(test_value, test_value), 0.001, msg=None)
+   test_value = '+1E6'
+   ok_(isinstance(lconf_to_float(test_value, test_value), float), msg=None)
+   eq_(lconf_to_float(test_value, test_value), 1000000.0, msg=None)
+   test_value = '-Infinity'
+   ok_(isinstance(lconf_to_float(test_value, test_value), float), msg=None)
 
 
 def test_cast__to_lconf_pathexpanduser():
@@ -295,8 +286,6 @@ if __name__ == '__main__':
    test_cast__lconf_to_float__expect_failure3()
    test_cast__lconf_to_float__expect_failure4()
    test_cast__lconf_to_float__expect_failure5()
-   test_cast__lconf_to_number__expect_failure()
-   test_cast__lconf_to_number__expect_failure1()
    test_cast__to_lconf_pathexpanduser__expect_failure()
    test_cast__to_lconf_pathexpanduser__expect_failure2()
    test_cast__lconf_to_datetime__expect_failure()
@@ -304,11 +293,9 @@ if __name__ == '__main__':
    test_cast__lconf_to_bool()
    test_cast__lconf_to_int()
    test_cast__lconf_to_float()
-   test_cast__lconf_to_number()
    test_cast__to_lconf_pathexpanduser()
    test_cast__lconf_to_datetime()
 
    test_cast__lconf_to_datetime_expect_failure1()
    test_cast__lconf_to_datetime_expect_failure2()
    test_cast__lconf_to_datetime_expect_failure3()
-

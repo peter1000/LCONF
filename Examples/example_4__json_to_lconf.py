@@ -39,7 +39,7 @@ from LCONF.lconf_structure_classes import (
 from LCONF.main_code import (
    LCONF_DEFAULT,
    lconf_emit,
-   lconf_emit__default_obj,
+   lconf_emit_default_obj,
    lconf_parse_section_extract_by_name,
    lconf_prepare_and_parse_section,
    lconf_prepare_default_obj,
@@ -47,9 +47,7 @@ from LCONF.main_code import (
    lconf_to_ordered_native_type,
    lconf_validate_one_section_str,
 )
-from LCONF.transform import (
-   lconf_to_int,
-)
+from LCONF.transform import lconf_to_int
 
 
 lconf_section__example_4a__template_obj = Root([
@@ -186,7 +184,7 @@ def main():
    print('  lconf_parse_obj.has_comments: ', lconf_parse_obj.has_comments)
 
    # EXAMPLE 4 a: EMIT DEFAULT OBJ
-   lconf_section_emitted_default_obj_str = lconf_emit__default_obj(
+   lconf_section_emitted_default_obj_str = lconf_emit_default_obj(
       lconf_section__example_4a__template_obj,
       'EMITTED EXAMPLE 4 a',
       onelinelists=LCONF_DEFAULT,
@@ -279,7 +277,7 @@ def main():
    print('  lconf_parse_obj.has_comments: ', lconf_parse_obj.has_comments)
 
    # EXAMPLE 4 b: EMIT DEFAULT OBJ
-   lconf_section_emitted_default_obj_str = lconf_emit__default_obj(
+   lconf_section_emitted_default_obj_str = lconf_emit_default_obj(
       lconf_section__example_4b__template_obj,
       'EMITTED EXAMPLE 4 b',
       onelinelists=LCONF_DEFAULT,
