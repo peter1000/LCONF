@@ -5,6 +5,21 @@ Release History
 
 .. _whats-new:
 
+Version 6.1.1     2014-10-04
+============================
+
+Fixes/Other Changes:
+--------------------
+
+   - updated requirement:
+
+      - PSphinxTheme>=2.0.1
+      
+   - updated Required Software
+      
+   - updated: updated docs: Projects using LCONF
+
+
 Version 6.1.0     2014-10-02
 ============================
 

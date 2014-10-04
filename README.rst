@@ -120,9 +120,8 @@ Projects using LCONF
 
 `projects` which make use of: **LCONF**
 
-- `HealthNutritionPlanner <https://github.com/peter1000/HealthNutritionPlanner>`_
-   Plan: weight loss, healthy diets, meals.
-
+- `PyNHEP <https://github.com/peter1000/PyNHEP>`_
+   PyNHEP: The N(utrition) and H(ealthy) E(ating) P(lanner).
 
 
 |
