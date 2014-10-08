@@ -102,6 +102,10 @@ If you wish to generate your own copy of the documentation, you will need to:
 
    $ pip3 install PSphinxTheme
 
+#. If not already installed - install `LconfPygmentsLexer <https://github.com/peter1000/LconfPygmentsLexer>`_ ::
+
+   $ pip3 install LconfPygmentsLexer
+
 #. From the `LCONF` source directory, run ``python3 setup.py build_sphinx -E``.
 #. Once Sphinx is finished, point a web browser to the file::
 
@@ -115,6 +119,12 @@ Online Resources
 - Source:     https://github.com/peter1000/LCONF
 
 
+Related Resources
+-----------------
+- `LconfPygmentsLexer <https://github.com/peter1000/LconfPygmentsLexer>`_ a simple pygments lexer for LCONF
+- `PSphinxTheme <https://github.com/peter1000/PSphinxTheme>`_ A sphinx theme which has an admonition for `LCONF` examples.
+
+
 Projects using LCONF
 ====================
 
@@ -122,7 +132,6 @@ Projects using LCONF
 
 - `PyNHEP <https://github.com/peter1000/PyNHEP>`_
    PyNHEP: The N(utrition) and H(ealthy) E(ating) P(lanner).
-
 
 |
 |

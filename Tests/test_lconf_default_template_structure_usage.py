@@ -32,6 +32,10 @@ from LCONF.main_code import (
    lconf_prepare_default_obj,
    lconf_parse_section,
 )
+from LCONF.transform import (
+   lconf_to_int,
+   lconf_to_float,
+)
 
 
 # noinspection PyUnusedLocal,PyUnresolvedReferences
@@ -47,7 +51,7 @@ def transform_function(value_str, extra_err_info):
    return value_str
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_main_root_obj_ok():
    """ Tests: test_lconf_main_root_obj_ok
    """
@@ -56,23 +60,28 @@ def test_lconf_main_root_obj_ok():
    lconf_section_raw_str = r'''___SECTION :: Example LCONF Root
 key1 :: value1
 key2 :: value2
+key3 :: value3
+key4 ::
 # Comment-Line: Root/Main LCONF-Section END TAG Line
 ___END'''
 
    example_lconf_template = Root([
-      # Comment-Line: Root/Main key value pair
+      ('#1', '# Comment-Line: Root/Main key value pair'),
       ('key1', 'default_value1'),
-      # Comment-Line: Root/Main key value pair with transform_function
       ('key2', 'default_value2', transform_function),
+      ('#2', '# Comment-Line: Root/Main key value pair with transform_function and `Empty-KeyValuePair-ReplacementValue`'),
+      ('key3', 'default_value3', transform_function, 'empty_replacement_value3'),
+      ('key4', 'default_value4', transform_function, 'empty_replacement_value4'),
    ])
 
    default_lconf_obj = lconf_prepare_default_obj(example_lconf_template, with_comments=True)
    lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=True)
+
    default_lconf_obj = lconf_prepare_default_obj(example_lconf_template, with_comments=False)
    lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_key_value_mapping_ok():
    """ Tests: test_lconf_key_value_mapping_ok
    """
@@ -83,13 +92,19 @@ def test_lconf_key_value_mapping_ok():
 . key_value_mapping
    key1 :: value1
    key2 :: value2
+   key3 :: value3
+   key4 ::
 ___END'''
 
    example_lconf_template = Root([
       # Comment-Line: below is a Main `Key-Value-Mapping`
       ('key_value_mapping', KVMap([
+         ('#1', '# Comment-Line: Root/Main key value pair'),
          ('key1', 'default_value1'),
          ('key2', 'default_value2', transform_function),
+         ('#2', '# Comment: Root/Main key value pair with transform_function and  `Empty-KeyValuePair-ReplacementValue`'),
+         ('key3', 'default_value3', transform_function, 'empty_replacement_value3'),
+         ('key4', 'default_value4', transform_function, 'empty_replacement_value4'),
       ])),
    ])
 
@@ -99,7 +114,7 @@ ___END'''
    lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_key_value_separated_list_ok1():
    """ Tests: test_lconf_key_value_separated_list_ok1
    """
@@ -111,7 +126,7 @@ def test_lconf_key_value_separated_list_ok1():
 ___END'''
 
    example_lconf_template = Root([
-      # Comment-Line: below is a Main `Key :: Value-List`: use_oneline is True
+      ('#1', '# Comment-Line: below is a Main `Key :: Value-List`: use_oneline is True'),
       ('list', KVList(True, ['default_value1', 'default_value2']))
    ])
 
@@ -121,7 +136,7 @@ ___END'''
    lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_key_value_separated_list_ok2():
    """ Tests: test_lconf_key_value_separated_list_ok2
    """
@@ -133,7 +148,7 @@ def test_lconf_key_value_separated_list_ok2():
 ___END'''
 
    example_lconf_template = Root([
-      # Comment-Line: below is a Main `Key :: Value-List`: use_oneline is True
+      ('#1', '# Comment-Line: below is a Main `Key :: Value-List`: with transform_function - use_oneline is True '),
       ('list', KVList(True, ['default_value1', 'default_value2']), transform_function)
    ])
 
@@ -143,7 +158,7 @@ ___END'''
    lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_key_value_list_ok1():
    """ Tests: test_lconf_key_value_list_ok1
    """
@@ -158,7 +173,7 @@ def test_lconf_key_value_list_ok1():
 ___END'''
 
    example_lconf_template = Root([
-      # Comment-Line: below is a Main `Key :: Value-List`: use_oneline is False
+      ('#1', '# Comment-Line: below is a Main `Key :: Value-List`: use_oneline is False'),
       ('list', KVList(False, ['default_value1', 'default_value2']))
    ])
 
@@ -168,7 +183,7 @@ ___END'''
    lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_key_value_list_ok2():
    """ Tests: test_lconf_key_value_list_ok2
    """
@@ -183,7 +198,7 @@ def test_lconf_key_value_list_ok2():
 ___END'''
 
    example_lconf_template = Root([
-      # Comment-Line: below is a Main `Key :: Value-List`: use_oneline is False
+      ('#1', '# Comment-Line: below is a Main `Key :: Value-List`: with transform_function - use_oneline is False '),
       ('list', KVList(False, ['default_value1', 'default_value2']), transform_function)
    ])
 
@@ -193,7 +208,7 @@ ___END'''
    lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_list_of_tuples_ok1():
    """ Tests: test_lconf_list_of_tuples_ok1
    """
@@ -221,7 +236,7 @@ ___END'''
    lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_list_of_tuples_ok2():
    """ Tests: test_lconf_list_of_tuples_ok2
    """
@@ -249,7 +264,7 @@ ___END'''
    lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_list_of_tuples_ok3():
    """ Tests: test_lconf_list_of_tuples_ok3
    """
@@ -277,7 +292,7 @@ ___END'''
    lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_list_of_tuples_ok4():
    """ Tests: test_lconf_list_of_tuples_ok4
    """
@@ -305,7 +320,7 @@ ___END'''
    lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_list_of_tuples_ok5():
    """ Tests: test_lconf_list_of_tuples_ok5
    """
@@ -333,7 +348,7 @@ ___END'''
    lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_list_of_tuples_ok6():
    """ Tests: test_lconf_list_of_tuples_ok6
    """
@@ -361,7 +376,7 @@ ___END'''
    lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_list_of_tuples_ok7():
    """ Tests: test_lconf_list_of_tuples_ok7
    """
@@ -389,7 +404,7 @@ ___END'''
    lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_repeated_block_identifier_ok1():
    """ Tests: test_lconf_repeated_block_identifier_ok1
    """
@@ -402,10 +417,13 @@ def test_lconf_repeated_block_identifier_ok1():
    BlockName1
       key1 :: value1
       key2 :: value2
+      key3 ::
 
    BlockName2
       key1 :: value1
       key2 :: value2
+      key3 :: value3
+
 ___END'''
 
    example_lconf_template = Root([
@@ -417,6 +435,8 @@ ___END'''
             ('key1', 'default_value1`'),
             # Comment-Line: Block key value pair with transform_function
             ('key2', 'default_value2', transform_function),
+            ('#1', '# Comment: Block key value pair with transform_function and `Empty-KeyValuePair-ReplacementValue`'),
+            ('key3', 'default_value3', transform_function, 'empty_replacement_value3'),
          ])
       )),
    ])
@@ -427,7 +447,7 @@ ___END'''
    lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_repeated_block_identifier_ok2():
    """ Tests: test_lconf_repeated_block_identifier_ok2
    """
@@ -440,10 +460,13 @@ def test_lconf_repeated_block_identifier_ok2():
    BlockName1
       key1 :: value1
       key2 :: value2
+      key3 ::
 
    BlockName2
       key1 :: value1
       key2 :: value2
+      key3 :: value3
+
 ___END'''
 
    example_lconf_template = Root([
@@ -452,9 +475,11 @@ ___END'''
          # Comment-Line: Dummy Block
          Blk([
             # Comment-Line: Block key value pair
-            ('key1', 'default_value1'),
+            ('key1', 'default_value1`'),
             # Comment-Line: Block key value pair with transform_function
             ('key2', 'default_value2', transform_function),
+            ('#1', '# Comment: Block key value pair with transform_function and `Empty-KeyValuePair-ReplacementValue`'),
+            ('key3', 'default_value3', transform_function, 'empty_replacement_value3'),
          ])
       )),
    ])
@@ -465,7 +490,7 @@ ___END'''
    lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_block_name_ok1():
    """ Tests: test_lconf_block_name_ok1
    """
@@ -477,18 +502,25 @@ def test_lconf_block_name_ok1():
    BlockName1
       key1 :: value1
       key2 :: value2
+      key3 :: value3
    # Comment-Line: below is another `Block-Name` - `Block` (dummy block)
    BlockName2
       key1 :: value1
       key2 :: value2
+      key3 ::
 ___END'''
 
    example_lconf_template = Root([
+      # Comment-Line: Root/Main `Repeated-Block-Identifier`: **min_required_blocks set to 2, max_allowed_blocks** set to 5
       ('My_Repeated_Block', BlkI(2, 5,
          # Comment-Line: Dummy Block
          Blk([
-            ('key1', 'default_value1'),
+            # Comment-Line: Block key value pair
+            ('key1', 'default_value1`'),
+            # Comment-Line: Block key value pair with transform_function
             ('key2', 'default_value2', transform_function),
+            ('#1', '# Comment: Block key value pair with transform_function and `Empty-KeyValuePair-ReplacementValue`'),
+            ('key3', 'default_value3', transform_function, 'empty_replacement_value3'),
          ])
       )),
    ])
@@ -499,7 +531,7 @@ ___END'''
    lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_key_value_separator_items_ok1():
    """ Tests: test_lconf_key_value_separator_items_ok1
    """
@@ -521,7 +553,7 @@ ___END'''
    lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_key_value_separator_items_ok2():
    """ Tests: test_lconf_key_value_separator_items_ok2
    """
@@ -543,7 +575,108 @@ ___END'''
    lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
+def test_lconf_key_value_separator_items_ok3():
+   """ Tests: test_lconf_key_value_separator_items_ok3
+   """
+   print('::: TEST: test_lconf_key_value_separator_items_ok3()')
+
+   lconf_section_raw_str = r'''___SECTION :: Example LCONF `Key :: Value Pairs`
+# Comment-Line: Root/Main key value pair
+key1 :: value1
+___END'''
+
+   example_lconf_template = Root([
+      ('#1', '# Comment-Line: Root/Main key value pair with transform_function and Empty-KeyValuePair-ReplacementValue'),
+      ('key1', 'default_value1', transform_function, 'empty_replacement_value1'),
+   ])
+
+   default_lconf_obj = lconf_prepare_default_obj(example_lconf_template, with_comments=True)
+   lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=True)
+   default_lconf_obj = lconf_prepare_default_obj(example_lconf_template, with_comments=False)
+   lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
+
+
+# noinspection PyUnusedLocal
+def test_lconf_key_value_separator_items_ok4():
+   """ Tests: test_lconf_key_value_separator_items_ok4
+   """
+   print('::: TEST: test_lconf_key_value_separator_items_ok4()')
+
+   lconf_section_raw_str = r'''___SECTION :: Example LCONF `Key :: Value Pairs`
+# Comment-Line: Root/Main key value pair
+key1 :: value1
+___END'''
+
+   example_lconf_template = Root([
+      ('#1a', '# Comment: Root/Main key value pair with no transform_function and Empty-KeyValuePair-ReplacementValue'),
+      ('#1b', '#          Instead of the transform_function use None'),
+      ('key1', 'default_value1', None, 'empty_replacement_value1'),
+   ])
+
+   default_lconf_obj = lconf_prepare_default_obj(example_lconf_template, with_comments=True)
+   lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=True)
+   default_lconf_obj = lconf_prepare_default_obj(example_lconf_template, with_comments=False)
+   lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
+
+
+# noinspection PyUnusedLocal
+def test_lconf_empty_key_value_pair_replacement_ok1():
+   """ Tests: test_lconf_empty_key_value_pair_replacement_ok1
+   """
+   print('::: TEST: test_lconf_empty_key_value_pair_replacement_ok1()')
+
+   lconf_section_raw_str = r'''___SECTION :: Example LCONF `Key :: Value Pairs` items
+# Comment-Line: Root/Main key value pair
+key1 :: value1
+key2 :: Red
+key3 ::
+___END'''
+
+   example_lconf_template = Root([
+      ('#1', '# Comment: Root/Main key value pair - no transform function - with  `Empty-KeyValuePair-ReplacementValue`'),
+      ('key1', 'default_value1', None, 'Empty-KeyValuePair-ReplacementValue'),
+      ('key2', 'Blue', None, 'NO-COLOR-DEFINED'),
+      ('key3', 'Blue', None, 'NO-COLOR-DEFINED'),
+   ])
+
+   default_lconf_obj = lconf_prepare_default_obj(example_lconf_template, with_comments=True)
+   lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=True)
+   default_lconf_obj = lconf_prepare_default_obj(example_lconf_template, with_comments=False)
+   lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
+
+
+# noinspection PyUnusedLocal
+def test_lconf_empty_key_value_pair_replacement_ok2():
+   """ Tests: test_lconf_empty_key_value_pair_replacement_ok2
+   """
+   print('::: TEST: test_lconf_empty_key_value_pair_replacement_ok2()')
+
+   lconf_section_raw_str = r'''___SECTION :: Example LCONF `Key :: Value Pairs` items
+# Comment-Line: Root/Main key value pair
+key1 :: value1
+key2 ::
+key3 ::
+___END'''
+
+   example_lconf_template = Root([
+      ('#1', '# Comment Root/Main key value pair - with transform function - with `Empty-KeyValuePair-ReplacementValue`'),
+      ('key1', 'default_value1', transform_function, 'Empty-KeyValuePair-ReplacementValue'),
+      # Comment-Line: in the case below: if `key2` is in the `LCONF source` set to empty: the parsed lconf obj will have
+      # the `Empty-KeyValuePair-ReplacementValue` -1
+      ('key2', 500, lconf_to_int, -1),
+      # Comment-Line: in the case below: if `key3` is by default empty: the parsed lconf obj will have
+      #     the `Empty-KeyValuePair-ReplacementValue` -1 except the `LCONF source` to be parsed has set it to something
+      ('key3', '', lconf_to_float, -999.4),
+   ])
+
+   default_lconf_obj = lconf_prepare_default_obj(example_lconf_template, with_comments=True)
+   lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=True)
+   default_lconf_obj = lconf_prepare_default_obj(example_lconf_template, with_comments=False)
+   lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
+
+
+# noinspection PyUnusedLocal
 def test_lconf_default_comment_lines_ok1():
    """ Tests: test_lconf_default_comment_lines_ok1
    """
@@ -567,7 +700,7 @@ ___END'''
    lconf_obj = lconf_parse_section(default_lconf_obj, lconf_section_raw_str, example_lconf_template, validate=False)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_default_comment_lines_ok2():
    """ Tests: test_lconf_default_comment_lines_ok2
    """
@@ -608,10 +741,17 @@ if __name__ == '__main__':
    test_lconf_list_of_tuples_ok4()
    test_lconf_list_of_tuples_ok5()
    test_lconf_list_of_tuples_ok6()
+   test_lconf_list_of_tuples_ok7()
    test_lconf_repeated_block_identifier_ok1()
    test_lconf_repeated_block_identifier_ok2()
    test_lconf_block_name_ok1()
    test_lconf_key_value_separator_items_ok1()
    test_lconf_key_value_separator_items_ok2()
+   test_lconf_key_value_separator_items_ok3()
+   test_lconf_key_value_separator_items_ok4()
+
+   test_lconf_empty_key_value_pair_replacement_ok1()
+   test_lconf_empty_key_value_pair_replacement_ok2()
+
    test_lconf_default_comment_lines_ok1()
    test_lconf_default_comment_lines_ok2()

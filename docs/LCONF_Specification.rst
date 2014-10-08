@@ -7,7 +7,7 @@
 .. index:: LCONF; specification
 
 ========================
-LCONF: Specification 6.0
+LCONF: Specification 7.0
 ========================
 `LCONF` is a light - human-friendly, simple readable data serialization format for dynamic configuration.
 
@@ -51,6 +51,8 @@ must have some common features:
    `Default-Comment/Empty Lines`_
 #. must support option to define: order and default values of all LCONF items, keys, values, blocks ect..:
    :ref:`Order <order>`, :ref:`Default Values <default-values>`, `Default-Comment/Empty Lines`_
+#. must support option to define: `Empty-KeyValuePair-ReplacementValues`
+   :ref:`Empty Key :: Value Pairs`<empty_key_value_pairs>`
 
 
 .. index:: Specification; default-comment/default empty lines
@@ -131,10 +133,6 @@ Each `value` is always interpreted as a: `single string`
 
    - to transform it use **one** `Value Transformation` function
 
-Empty `Key :: Value Pair`: for empty values the last space of the `Key :: Value Separator`_ is skipped
-
-.. warning:: Empty values with `transformation-function` are returned as empty strings
-
 
 .. lconf-example::
 
@@ -147,6 +145,14 @@ Empty `Key :: Value Pair`: for empty values the last space of the `Key :: Value 
       mykey :: a long sentence ...
       ___END
 
+.. index:: Specification; `Empty `Key :: Value Pairs` and `Empty-KeyValuePair-ReplacementValue`
+
+.. _empty_key_value_pairs:
+
+Empty `Key :: Value Pairs`
+``````````````````````````
+.. lconf-example::
+
    LCONF with empty `Key :: Value Pair`
 
    .. code-block:: lconf
@@ -155,10 +161,18 @@ Empty `Key :: Value Pair`: for empty values the last space of the `Key :: Value 
       MyEmptyKeyValuePair ::
       ___END
 
+Empty `Key :: Value Pair`: for empty values the last space of the `Key :: Value Separator`_ is skipped
+
+.. warning:: Empty values with `transformation-function` are returned as:
+
+   - empty strings
+   - or a predefined: `Empty-KeyValuePair-ReplacementValue`
+
+**Empty-KeyValuePair-ReplacementValue** is optional and must be implemented within the code of a
+:ref:`LCONF-Default-Template-Structure <lconf_default_template_structure>`
 
 
 .. index:: Specification; lists
-
 
 Lists
 -----
@@ -176,7 +190,7 @@ For an empty list only define the `List Identifier line` without any items / ite
 .. _list_identifier:
 
 List Identifier
-~~~~~~~~~~~~~~~
+```````````````
 `minus, one space` is used as `List Identifier` for all `3 sub types of lists`: **"- List Identifier Name"**
 
 
@@ -205,7 +219,7 @@ List Identifier
 .. index:: Specification; key :: value-list
 
 Key :: Value-List
-~~~~~~~~~~~~~~~~~
+`````````````````
 Ordered collection of items: oneline list
 
 Uses the `List Identifier`_ and  also the `Key :: Value Separator`_ and as value a collection of ordered items separated by
@@ -242,7 +256,7 @@ Each `list item` is always interpreted as a: `single string` within a list obj.
 .. index:: Specification; key-value-list
 
 Key-Value-List
-~~~~~~~~~~~~~~
+``````````````
 Ordered collection of items: multiline list
 
 Uses the `List Identifier`_ and the value lines (list items) uses one indentation level (3 additional spaces).
@@ -317,7 +331,7 @@ Each `list item` line is always interpreted as a: `single string` within a list 
 .. index:: Specification; list-of-tuples
 
 List-Of-Tuples
-~~~~~~~~~~~~~~
+``````````````
 Ordered collection of items: multi-line list of multiple values
 
 Uses the `List Identifier`_ and additionally adds at the end a `space` followed by column names
@@ -480,19 +494,19 @@ Repeated Blocks allows to configure any number of such blocks within the ‘LCON
 
 Any number of Block-Names can be defined: this can also be limited in a `LCONF-Template-Default-Structure`
 
-`Repeated Blocks` have two options to predefine: 
+`Repeated Blocks` have two options to predefine:
 
    - NUMBER_MIN_REQUIRED_BLOCKS in a `LCONF-Template-Default-Structure`
-   
+
       - 0 or greater
-      
+
       - to not define it: set it to -1
-      
+
    - NUMBER_MAX_ALLOWED_BLOCKS in a `LCONF-Template-Default-Structure`
-      
+
       - 1 or greater
-      
-      - to not define it: set it to -1 
+
+      - to not define it: set it to -1
 
 Block item can be any of the :ref:`Four Main Structures <Four_Main_Structures>`.
 
@@ -500,7 +514,7 @@ Block item can be any of the :ref:`Four Main Structures <Four_Main_Structures>`.
 .. _repeated_block_identifier:
 
 Repeated-Block-Identifier
-~~~~~~~~~~~~~~~~~~~~~~~~~
+`````````````````````````
 `asterisk, one space` is used as `Repeated-Block-Identifier`: **"* Repeated-Block-Identifier Name"**
 
 An Empty `Repeated Block Identifier` is permitted: but without a `Block-Name` it does nothing
@@ -534,7 +548,7 @@ An Empty `Repeated Block Identifier` is permitted: but without a `Block-Name` it
 
 
 Block-Names
-~~~~~~~~~~~
+```````````
 Each Block is named: `Block-Names` use **one** additional indentation level (3 additional spaces) from the
 `Repeated-Block-Identifier`.
 
@@ -558,7 +572,7 @@ Any number of Block-Names can be defined: this can also be limited in a `LCONF-T
 
 
 Block-Name Items
-~~~~~~~~~~~~~~~~
+````````````````
 `Block-Name Items` use **one** additional indentation level (3 additional spaces) from the `Block-Name`.
 
 Each `Block-Name Item` can be any of the :ref:`Four Main Structures <Four_Main_Structures>`.
@@ -584,7 +598,7 @@ Section Start/End Tags
 .. warning:: Section Start/End TAGS are forbidden in any form except for the defined purpose.
 
 Section Start TAG
-~~~~~~~~~~~~~~~~~
+`````````````````
 `three underlines, capital SECTION`
 
 This is followed by a `Key :: Value Separator`_ and the Section Name which is required: it can not be an empty string value.
@@ -592,7 +606,7 @@ This is followed by a `Key :: Value Separator`_ and the Section Name which is re
 It must always be without indentation.
 
 Section End TAG
-~~~~~~~~~~~~~~~
+```````````````
 `three underlines, capital END`
 
 It must always be without indentation.
@@ -606,7 +620,7 @@ Restrictions
 **A library does not have to validate these restrictions: validation is optional.**
 
 Restrictions Summary
-~~~~~~~~~~~~~~~~~~~~
+````````````````````
 
 - GENERAL RESERVED: `___SECTION`, `___END`, `::`
 
@@ -662,7 +676,7 @@ Restrictions Summary
 .. index:: Restrictions; section start/end tag
 
 Restrictions: Section Start/End Tag
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+```````````````````````````````````
 
 .. warning:: Section Start/End Tag are forbidden in any form except for the defined purpose. `Section Start/End Tags`_
 
@@ -672,7 +686,7 @@ Restrictions: Section Start/End Tag
 .. _restrictions_unique_names:
 
 Restrictions: Unique names
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+``````````````````````````
 
 - all `Main Keys` and `Repeated-Block-Identifiers`: must be unique
 
@@ -690,7 +704,7 @@ Restrictions: Unique names
 .. _restrictions_item_types_in_lists:
 
 Restrictions: Item Types in Lists
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+`````````````````````````````````
 
 - `Key-Value-List` and `Key :: Value-List`: may be only basic types: not another list, tuple, dict ect..
 
@@ -730,21 +744,21 @@ Restrictions: Item Types in Lists
 .. index:: Restrictions; restrictions (No Trailing Spaces)
 
 Restrictions: No Trailing Spaces
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+````````````````````````````````
 Lines may not have any trailing spaces
 
 
 .. index:: Restrictions; comments
 
 Restrictions: Comments
-~~~~~~~~~~~~~~~~~~~~~~
+``````````````````````
 Comment lines **#** within a `LCONF-Section` are required to have the indentation of the next none empty line.
 
 
 .. index:: Restrictions; default-comment/empty lines
 
 Restrictions: Default-Comment/Empty Lines
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+`````````````````````````````````````````
 
 - before `Block-Names` (dummy_blk) there may be no `Default-Comment/Empty Lines`_ within the code of the
    `LCONF-Default-Template-Structure`_.

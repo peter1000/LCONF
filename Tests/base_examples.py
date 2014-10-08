@@ -45,8 +45,9 @@ def get_lconf_section__base_example_template_obj():
       # Default Empty Line
       ('#1', ''),
       # Default Comment Line
-      ('#2', '# Comment-Line: below: Main `Key :: Value Pair`'),
-      ('key1value_pair', ''),
+      ('#2a', '# Comment-Line: below Main `Key :: Value Pair` using an `Empty-KeyValuePair-ReplacementValue` "NOT-DEFINED"'),
+      ('#2b', '#               Transform Function is not used and set to None'),
+      ('key1value_pair', '', None, 'NOT-DEFINED'),
       ('#3', '# Comment-Line: below is a `Key :: Value Pair` with an empty value string: which is skipped'),
       ('key2value_pair', ''),
       ('#4', '# Comment-Line: Using a Transform Function'),
@@ -54,22 +55,24 @@ def get_lconf_section__base_example_template_obj():
       ('key4value_pair', False, lconf_to_bool),
       ('key5value_pair', True, lconf_to_bool),
       ('key6value_pair', ''),
-      ('key7value_pair', 0.0, lconf_to_float),
+      ('#5a', '# Comment-Line: Using a Transform Function and using an `Empty-KeyValuePair-ReplacementValue` "-94599.5"'),
+      ('#5b', '#               as default value an empty string is set'),
+      ('key7value_pair', '', lconf_to_float, -94599.5),
       ('key8value_pair', ''),
       ('key9value_pair', ''),
 
       # `Key-Value-Mapping: type: KVMap
-      ('#5', '', None),
-      ('#6', '# Comment-Line: below is a Main `Key-Value-Mapping`'),
+      ('#6', '', None),
+      ('#7', '# Comment-Line: below is a Main `Key-Value-Mapping`'),
       ('key10value_mapping', KVMap([
-         ('#7', '# Comment-Line:  Key-Value-Mapping items: are `Key :: Value Pairs`'),
+         ('#8', '# Comment-Line:  Key-Value-Mapping items: are `Key :: Value Pairs`'),
          ('mapping10_key1', ''),
          ('mapping10_key2', False, lconf_to_bool),
          ('mapping10_key3', 0, lconf_to_int),
 
          # `Key :: Value-List` or `Key-Value-List`: type: KVList: set default_is_oneline: True
-         ('#8', ''),
-         ('#9', '# Comment-Line:  Key-Value-Mapping item: `Key :: Value-List` or `Key-Value-List`'),
+         ('#9a', ''),
+         ('#9b', '# Comment-Line:  Key-Value-Mapping item: `Key :: Value-List` or `Key-Value-List`'),
          ('mapping10_key4_list', KVList(True, [555, 9999]), lconf_to_int),
 
          # `Key :: Value-List` or `Key-Value-List`: type: KVList: set default_is_oneline: False
@@ -115,8 +118,10 @@ def get_lconf_section__base_example_template_obj():
             ('#22', '# Comment-Line:  nested Key-Value-Mapping item: `Repeated-Block-Identifier`'),
             ('mapping11_key2_nested_mapping_key2_block_identifier', BlkI(-1, 5,
                Blk([
-                  ('#23', '# Comment-Line:  Block items: `Key :: Value Pairs`'),
-                  ('blk_item_red', 0, lconf_to_int),
+                  ('#23a', '# Comment-Line:  Block items: `Key :: Value Pairs`'),
+                  ('#23b', '#       Using a Transform Function and using an `Empty-KeyValuePair-ReplacementValue` "0"'),
+                  ('#23c', '#               as default value an empty string is set'),
+                  ('blk_item_red', '', lconf_to_int, 0),
                   ('blk_item_green', 0, lconf_to_int),
                   ('blk_item_blue', 0, lconf_to_int),
                ])
@@ -171,12 +176,14 @@ def get_lconf_section__base_example_template_obj():
             ('#42', '# Comment-Line: below Block-Item `Key-Value-Mapping` with all 4 defined items'),
             ('MyKey1_mapping', KVMap([
                ('blk_mapping_key1', ''),
-               ('blk_mapping_key2', 9999.999, lconf_to_float),
+               ('#43a', '# Comment-Line: Using a default value: "9999.999" and Transform Function'),
+               ('#43b', '#               as well as using an `Empty-KeyValuePair-ReplacementValue` "-9999999999.055"'),
+               ('blk_mapping_key2', 9999.999, lconf_to_float, -9999999999.055),
                ('blk_mapping_key3', False, lconf_to_bool),
 
                # `Key-Value-Mapping: type: KVMap
-               ('#43', ''),
-               ('#44', '# Comment-Line:  Block-Item `Key-Value-Mapping`: an other nested `Key-Value-Mapping`'),
+               ('#44a', ''),
+               ('#44b', '# Comment-Line:  Block-Item `Key-Value-Mapping`: an other nested `Key-Value-Mapping`'),
                ('blk_mapping_key4', KVMap([
                   ('nested_mapping_key1', 'franz'),
                   ('#45', ''),
@@ -219,15 +226,18 @@ def get_lconf_section__base_example_lconf_section_raw_str():
    """
    return r'''___SECTION :: BaseEXAMPLE
 
-# Comment-Line: below: Main `Key :: Value Pair`
-key1value_pair :: value1
+# Comment-Line: below Main `Key :: Value Pair` using an `Empty-KeyValuePair-ReplacementValue` "NOT-DEFINED"
+#               Transform Function is not used and set to None
+key1value_pair ::
 # Comment-Line: below is a `Key :: Value Pair` with an empty value string: which is skipped
 key2value_pair ::
 key3value_pair ::
 key4value_pair :: True
 key5value_pair :: False
 key6value_pair :: None
-key7value_pair :: 1456.984
+# Comment-Line: Using a Transform Function and using an `Empty-KeyValuePair-ReplacementValue` "-94599.5"
+#               as default value an empty string is set
+key7value_pair ::
 key8value_pair :: true
 # Comment-Line: Values can be most characters and also longer lines
 key9value_pair :: different characters # \n * | , & @  https://translate.google.com/ translate ਅਨੁਵਾਦ  翻訳する μεταφράζω
@@ -272,8 +282,10 @@ key9value_pair :: different characters # \n * | , & @  https://translate.google.
 
          # Comment-Line: `Block-Name1`
          sky_blue_blk_name1
-            # Comment-Line:  Block items: `Key :: Value Pair`
-            blk_item_red :: 135
+            # Comment-Line:  Block items: `Key :: Value Pairs`
+            #       Using a Transform Function and using an `Empty-KeyValuePair-ReplacementValue` "0"
+            #               as default value an empty string is set
+            blk_item_red ::
             blk_item_green :: 206
             blk_item_blue :: 235
 
@@ -321,6 +333,8 @@ key9value_pair :: different characters # \n * | , & @  https://translate.google.
       # Comment-Line: below Block-Item `Key-Value-Mapping` with all 4 defined items
       . MyKey1_mapping
          blk_mapping_key1 :: some text
+         # Comment-Line: Using a default value: "9999.999" and Transform Function
+         #               as well as  using an `Empty-KeyValuePair-ReplacementValue` "-9999999999.99999999"
          blk_mapping_key2 :: 12345.99
          blk_mapping_key3 :: True
 
@@ -362,8 +376,12 @@ key9value_pair :: different characters # \n * | , & @  https://translate.google.
    # Comment-Line: BLK_OBJ2 (Block-Name)
    BLK_OBJ2
 
-      # Comment-Line: below Block-Item `Key-Value-Mapping` with all 4 defined items
+      # Comment-Line: below Block-Item `Key-Value-Mapping` with only some defined items
       . MyKey1_mapping
+         blk_mapping_key1 :: some text
+         # Comment-Line: Using a default value: "9999.999" and Transform Function
+         #               as well as  using an `Empty-KeyValuePair-ReplacementValue` "-9999999999.055"
+         blk_mapping_key2 ::
          blk_mapping_key3 :: False
 
          # Comment-Line:  Block-Item `Key-Value-Mapping`: an other nested `Key-Value-Mapping`

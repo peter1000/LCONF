@@ -62,8 +62,9 @@ lconf_section__base_example_template_obj = Root([
    # Default Empty Line
    ('#1', ''),
    # Default Comment Line
-   ('#2', '# Comment-Line: below: Main `Key :: Value Pair`'),
-   ('key1value_pair', ''),
+   ('#2a', '# Comment-Line: below Main `Key :: Value Pair` using an `Empty-KeyValuePair-ReplacementValue` "NOT-DEFINED"'),
+   ('#2b', '#               Transform Function is not used and set to None'),
+   ('key1value_pair', '', None, 'NOT-DEFINED'),
    ('#3', '# Comment-Line: below is a `Key :: Value Pair` with an empty value string: which is skipped'),
    ('key2value_pair', ''),
    ('#4', '# Comment-Line: Using a Transform Function'),
@@ -71,22 +72,24 @@ lconf_section__base_example_template_obj = Root([
    ('key4value_pair', False, lconf_to_bool),
    ('key5value_pair', True, lconf_to_bool),
    ('key6value_pair', ''),
-   ('key7value_pair', 0.0, lconf_to_float),
+   ('#5a', '# Comment-Line: Using a Transform Function and using an `Empty-KeyValuePair-ReplacementValue` "-94599.5"'),
+   ('#5b', '#               as default value an empty string is set'),
+   ('key7value_pair', '', lconf_to_float, -94599.5),
    ('key8value_pair', ''),
    ('key9value_pair', ''),
 
    # `Key-Value-Mapping: type: KVMap
-   ('#5', '', None),
-   ('#6', '# Comment-Line: below is a Main `Key-Value-Mapping`'),
+   ('#6', '', None),
+   ('#7', '# Comment-Line: below is a Main `Key-Value-Mapping`'),
    ('key10value_mapping', KVMap([
-      ('#7', '# Comment-Line:  Key-Value-Mapping items: are `Key :: Value Pairs`'),
+      ('#8', '# Comment-Line:  Key-Value-Mapping items: are `Key :: Value Pairs`'),
       ('mapping10_key1', ''),
       ('mapping10_key2', False, lconf_to_bool),
       ('mapping10_key3', 0, lconf_to_int),
 
       # `Key :: Value-List` or `Key-Value-List`: type: KVList: set default_is_oneline: True
-      ('#8', ''),
-      ('#9', '# Comment-Line:  Key-Value-Mapping item: `Key :: Value-List` or `Key-Value-List`'),
+      ('#9a', ''),
+      ('#9b', '# Comment-Line:  Key-Value-Mapping item: `Key :: Value-List` or `Key-Value-List`'),
       ('mapping10_key4_list', KVList(True, [555, 9999]), lconf_to_int),
 
       # `Key :: Value-List` or `Key-Value-List`: type: KVList: set default_is_oneline: False
@@ -132,8 +135,10 @@ lconf_section__base_example_template_obj = Root([
          ('#22', '# Comment-Line:  nested Key-Value-Mapping item: `Repeated-Block-Identifier`'),
          ('mapping11_key2_nested_mapping_key2_block_identifier', BlkI(-1, 5,
             Blk([
-               ('#23', '# Comment-Line:  Block items: `Key :: Value Pairs`'),
-               ('blk_item_red', 0, lconf_to_int),
+               ('#23a', '# Comment-Line:  Block items: `Key :: Value Pairs`'),
+               ('#23b', '#       Using a Transform Function and using an `Empty-KeyValuePair-ReplacementValue` "0"'),
+               ('#23c', '#               as default value an empty string is set'),
+               ('blk_item_red', '', lconf_to_int, 0),
                ('blk_item_green', 0, lconf_to_int),
                ('blk_item_blue', 0, lconf_to_int),
             ])
@@ -188,12 +193,14 @@ lconf_section__base_example_template_obj = Root([
          ('#42', '# Comment-Line: below Block-Item `Key-Value-Mapping` with all 4 defined items'),
          ('MyKey1_mapping', KVMap([
             ('blk_mapping_key1', ''),
-            ('blk_mapping_key2', 9999.999, lconf_to_float),
+            ('#43a', '# Comment-Line: Using a default value: "9999.999" and Transform Function'),
+            ('#43b', '#               as well as using an `Empty-KeyValuePair-ReplacementValue` "-9999999999.055"'),
+            ('blk_mapping_key2', 9999.999, lconf_to_float, -9999999999.055),
             ('blk_mapping_key3', False, lconf_to_bool),
 
             # `Key-Value-Mapping: type: KVMap
-            ('#43', ''),
-            ('#44', '# Comment-Line:  Block-Item `Key-Value-Mapping`: an other nested `Key-Value-Mapping`'),
+            ('#44a', ''),
+            ('#44b', '# Comment-Line:  Block-Item `Key-Value-Mapping`: an other nested `Key-Value-Mapping`'),
             ('blk_mapping_key4', KVMap([
                ('nested_mapping_key1', 'franz'),
                ('#45', ''),
@@ -232,15 +239,18 @@ lconf_section__base_example_template_obj = Root([
 
 lconf_section__base_example_lconf_section_raw_str = r'''___SECTION :: BaseEXAMPLE
 
-# Comment-Line: below: Main `Key :: Value Pair`
-key1value_pair :: value1
+# Comment-Line: below Main `Key :: Value Pair` using an `Empty-KeyValuePair-ReplacementValue` "NOT-DEFINED"
+#               Transform Function is not used and set to None
+key1value_pair ::
 # Comment-Line: below is a `Key :: Value Pair` with an empty value string: which is skipped
 key2value_pair ::
 key3value_pair ::
 key4value_pair :: True
 key5value_pair :: False
 key6value_pair :: None
-key7value_pair :: 1456.984
+# Comment-Line: Using a Transform Function and using an `Empty-KeyValuePair-ReplacementValue` "-94599.5"
+#               as default value an empty string is set
+key7value_pair ::
 key8value_pair :: true
 # Comment-Line: Values can be most characters and also longer lines
 key9value_pair :: different characters # \n * | , & @  https://translate.google.com/ translate ਅਨੁਵਾਦ  翻訳する μεταφράζω
@@ -285,8 +295,10 @@ key9value_pair :: different characters # \n * | , & @  https://translate.google.
 
          # Comment-Line: `Block-Name1`
          sky_blue_blk_name1
-            # Comment-Line:  Block items: `Key :: Value Pair`
-            blk_item_red :: 135
+            # Comment-Line:  Block items: `Key :: Value Pairs`
+            #       Using a Transform Function and using an `Empty-KeyValuePair-ReplacementValue` "0"
+            #               as default value an empty string is set
+            blk_item_red ::
             blk_item_green :: 206
             blk_item_blue :: 235
 
@@ -334,6 +346,8 @@ key9value_pair :: different characters # \n * | , & @  https://translate.google.
       # Comment-Line: below Block-Item `Key-Value-Mapping` with all 4 defined items
       . MyKey1_mapping
          blk_mapping_key1 :: some text
+         # Comment-Line: Using a default value: "9999.999" and Transform Function
+         #               as well as  using an `Empty-KeyValuePair-ReplacementValue` "-9999999999.99999999"
          blk_mapping_key2 :: 12345.99
          blk_mapping_key3 :: True
 
@@ -375,8 +389,12 @@ key9value_pair :: different characters # \n * | , & @  https://translate.google.
    # Comment-Line: BLK_OBJ2 (Block-Name)
    BLK_OBJ2
 
-      # Comment-Line: below Block-Item `Key-Value-Mapping` with all 4 defined items
+      # Comment-Line: below Block-Item `Key-Value-Mapping` with only some defined items
       . MyKey1_mapping
+         blk_mapping_key1 :: some text
+         # Comment-Line: Using a default value: "9999.999" and Transform Function
+         #               as well as  using an `Empty-KeyValuePair-ReplacementValue` "-9999999999.055"
+         blk_mapping_key2 ::
          blk_mapping_key3 :: False
 
          # Comment-Line:  Block-Item `Key-Value-Mapping`: an other nested `Key-Value-Mapping`
@@ -457,9 +475,11 @@ def main():
    # EXAMPLE: ACCESS The Section-INFO
    print('\n\n============== EXAMPLE: ACCESS The Section-INFO ==============\n')
    print('  lconf_parse_obj.key_order: ', lconf_parse_obj.key_order)
+   print('  lconf_parse_obj.key_empty_replacementvalue: ', lconf_parse_obj.key_empty_replacementvalue)
    print('  lconf_parse_obj.section_name: ', lconf_parse_obj.section_name)
    print('  lconf_parse_obj.is_parsed: ', lconf_parse_obj.is_parsed)
    print('  lconf_parse_obj.has_comments: ', lconf_parse_obj.has_comments)
+
 
    # EXAMPLE: EMIT DEFAULT OBJ
    lconf_section_emitted_default_obj_str = lconf_emit_default_obj(
@@ -468,7 +488,7 @@ def main():
       onelinelists=LCONF_DEFAULT,
       with_comments=True
    )
-   print('\n\n============== EXAMPLE: EMIT DEFAULT OBJ ==============\n')
+   print('\n\n============== EXAMPLE: EMIT DEFAULT OBJ (==============\n')
    print(lconf_section_emitted_default_obj_str)
 
    # EXAMPLE: EMIT PARSED LCONF OBJ
@@ -479,10 +499,16 @@ def main():
       with_comments=True,
       validate=True
    )
-   lconf_section_emitted_parsed_obj_str = lconf_emit(lconf_parse_obj, onelinelists=LCONF_DEFAULT)
+   lconf_section_emitted_parsed_obj_str = lconf_emit(lconf_parse_obj, onelinelists=LCONF_DEFAULT, empty_key_value_pair=True)
 
-   print('\n\n============== EXAMPLE: EMIT PARSED LCONF OBJ ==============\n')
+   print('\n\n============== EXAMPLE: EMIT PARSED LCONF OBJ (empty_key_value_pair=True) ==============\n')
    print(lconf_section_emitted_parsed_obj_str)
+
+
+   lconf_section_emitted_parsed_obj_str = lconf_emit(lconf_parse_obj, onelinelists=LCONF_DEFAULT, empty_key_value_pair=False)
+   print('\n\n============== EXAMPLE: EMIT PARSED LCONF OBJ (empty_key_value_pair=False) ==============\n')
+   print(lconf_section_emitted_parsed_obj_str)
+
 
    # EXAMPLE: EMIT TO JSON
    lconf_parse_obj = lconf_parse_section_extract_by_name(

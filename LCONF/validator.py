@@ -6,6 +6,13 @@ LCONF.validator
 Overview
 ========
 This module is used by the **script** lconf-validate`: The LCONF validation script
+
+.. shell-example::
+
+   .. code-block:: sh
+   
+      $ lconf-validate path-to-first.lconf path-to-second.lconf
+   
 """
 import argparse
 from argparse import RawDescriptionHelpFormatter

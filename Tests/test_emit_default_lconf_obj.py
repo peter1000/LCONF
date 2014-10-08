@@ -42,11 +42,11 @@ from LCONF.transform import (
    lconf_to_float,
 )
 
-# noinspection PyUnresolvedReferences,PyUnresolvedReferences
+# noinspection PyUnresolvedReferences
 from base_examples import get_lconf_section__base_example_template_obj
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal,PyUnusedLocal,PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_emit_default_obj__ok0():
    """ Tests: test_lconf_emit_default_obj__ok0
    """
@@ -90,59 +90,51 @@ def test_lconf_emit_default_obj__ok0():
       onelinelists=LCONF_NO,
       with_comments=True
    )
+   lconf_validate_one_section_str(lconf_section_raw_str)
+
    lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Test Example1',
       onelinelists=LCONF_YES,
       with_comments=True
    )
+   lconf_validate_one_section_str(lconf_section_raw_str)
+
    lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Test Example1',
       onelinelists=LCONF_DEFAULT,
       with_comments=False
    )
+   section_lines, section_name = lconf_section_splitlines(lconf_section_raw_str, validate_first_line=False)
+   eq_(section_lines[0], '___SECTION :: Test Example1', msg=None)
+   # empty multi line list: `Key :: Value-List`
+   eq_(section_lines[6], '- interests ::', msg=None)
+   eq_(section_lines[8], '___END', msg=None)
+
+   lconf_validate_one_section_str(lconf_section_raw_str)
+   #
    lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Test Example1',
       onelinelists=LCONF_NO,
       with_comments=False
    )
+
+   section_lines, section_name = lconf_section_splitlines(lconf_section_raw_str, validate_first_line=False)
+   eq_(section_lines[0], '___SECTION :: Test Example1', msg=None)
+   # empty multi line list: `Key :: Value-List`
+   eq_(section_lines[6], '- interests', msg=None)
+   eq_(section_lines[8], '___END', msg=None)
+
+   lconf_validate_one_section_str(lconf_section_raw_str)
+
    lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Test Example1',
       onelinelists=LCONF_YES,
       with_comments=False
    )
-
-
-def test_lconf_emit_default_obj__ok1():
-   """ Tests: test_lconf_emit_default_obj__ok1
-   """
-   print('::: TEST: test_lconf_emit_default_obj__ok1()')
-
-   lconf_section__template_obj = Root([
-      # Default Empty Line
-      ('#1', ''),
-      # Default Comment Line
-      ('#2', '# Comment-Line: `Key :: Value Pair`'),
-      ('first', ''),
-      ('last', ''),
-      ('sex', ''),
-      ('age', ''),
-      ('salary', ''),
-      ('#3', '# Comment-Line: `Key-Value-List`'),
-      ('interests', KVList(True, [])),
-      ('#4', '# Comment-Line: `Key :: Value Pair`'),
-      ('registered', ''),
-   ])
-   lconf_section_raw_str = lconf_emit_default_obj(
-      lconf_section__template_obj,
-      'Test Example1',
-      onelinelists=LCONF_DEFAULT,
-      with_comments=False
-   )
-
    section_lines, section_name = lconf_section_splitlines(lconf_section_raw_str, validate_first_line=False)
    eq_(section_lines[0], '___SECTION :: Test Example1', msg=None)
    # empty multi line list: `Key :: Value-List`
@@ -152,11 +144,11 @@ def test_lconf_emit_default_obj__ok1():
    lconf_validate_one_section_str(lconf_section_raw_str)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal,PyUnusedLocal,PyUnusedLocal,PyUnusedLocal
-def test_lconf_emit_default_obj__ok2():
-   """ Tests: test_lconf_emit_default_obj__ok2
+# noinspection PyUnusedLocal
+def test_lconf_emit_default_obj__ok1():
+   """ Tests: test_lconf_emit_default_obj__ok1
    """
-   print('::: TEST: test_lconf_emit_default_obj__ok2()')
+   print('::: TEST: test_lconf_emit_default_obj__ok1()')
 
    lconf_section__template_obj = Root([
       ('first', ''),
@@ -214,10 +206,10 @@ def test_lconf_emit_default_obj__ok2():
    )
 
 
-def test_lconf_emit_default_obj__ok3():
-   """ Tests: test_lconf_emit_default_obj__ok3
+def test_lconf_emit_default_obj__ok2():
+   """ Tests: test_lconf_emit_default_obj__ok2
    """
-   print('::: TEST: test_lconf_emit_default_obj__ok3()')
+   print('::: TEST: test_lconf_emit_default_obj__ok2()')
 
    lconf_section__template_obj = Root([
       ('first', 'Paul'),
@@ -238,6 +230,43 @@ def test_lconf_emit_default_obj__ok3():
    section_lines, section_name = lconf_section_splitlines(lconf_section_raw_str, validate_first_line=False)
    eq_(section_lines[0], '___SECTION :: Test Example1', msg=None)
    eq_(section_lines[4], 'age :: 39', msg=None)
+   eq_(section_lines[6], '- interests', msg=None)
+   eq_(section_lines[7], '   golf', msg=None)
+   eq_(section_lines[10], 'registered :: true', msg=None)
+
+   lconf_validate_one_section_str(lconf_section_raw_str)
+
+
+def test_lconf_emit_default_obj__ok3():
+   """ Tests: test_lconf_emit_default_obj__ok3
+   """
+   print('::: TEST: test_lconf_emit_default_obj__ok3()')
+
+   lconf_section__template_obj = Root([
+      ('first', 'Paul'),
+      ('#1', '# Comment-Line: `Key :: Value Pair` using an `Empty-KeyValuePair-ReplacementValue "NOT-DEFINED"'),
+      ('last', 'Smith', None, 'NOT-DEFINED'),
+      ('#2', '# Comment-Line: `Key :: Value Pair` using an `Empty-KeyValuePair-ReplacementValue "NOT-DEFINED"'),
+      ('sex', '', None, 'NOT-DEFINED'),
+      ('age', '39', lconf_to_int),
+      ('#3', '# Comment-Line: `Key :: Value Pair` using an `Empty-KeyValuePair-ReplacementValue "-1"'),
+      ('salary', '', lconf_to_float, -1),
+      ('interests', KVList(False, ['golf', 'reading', 'investments'])),
+      ('registered', 'true'),
+   ])
+   lconf_section_raw_str = lconf_emit_default_obj(
+      lconf_section__template_obj,
+      'Test Example1',
+      onelinelists=LCONF_DEFAULT,
+      with_comments=False
+   )
+   section_lines, section_name = lconf_section_splitlines(lconf_section_raw_str, validate_first_line=False)
+   eq_(section_lines[0], '___SECTION :: Test Example1', msg=None)
+   eq_(section_lines[1], 'first :: Paul', msg=None)
+   eq_(section_lines[2], 'last :: Smith', msg=None)
+   eq_(section_lines[3], 'sex ::', msg=None)
+   eq_(section_lines[4], 'age :: 39', msg=None)
+   eq_(section_lines[5], 'salary ::', msg=None)
    eq_(section_lines[6], '- interests', msg=None)
    eq_(section_lines[7], '   golf', msg=None)
    eq_(section_lines[10], 'registered :: true', msg=None)
@@ -313,7 +342,7 @@ def test_lconf_emit_default_obj__ok6():
    lconf_validate_one_section_str(lconf_section_raw_str)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal,PyUnusedLocal,PyUnusedLocal,PyUnusedLocal,PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_emit_default_obj__ok7():
    """ Tests: test_lconf_emit_default_obj__ok7
    """
@@ -330,9 +359,9 @@ def test_lconf_emit_default_obj__ok7():
    )
 
    section_lines, section_name = lconf_section_splitlines(lconf_section_raw_str, validate_first_line=True)
-   eq_(section_lines[23], '   - mapping10_key4_list :: 555,9999', msg=None)
-   eq_(section_lines[97], '            nested_mapping_key1 :: franz', msg=None)
-   eq_(section_lines[107], '                  - block-item_key3_list |name|height|weight|', msg=None)
+   eq_(section_lines[26], '   - mapping10_key4_list :: 555,9999', msg=None)
+   eq_(section_lines[104], '            nested_mapping_key1 :: franz', msg=None)
+   eq_(section_lines[114], '                  - block-item_key3_list |name|height|weight|', msg=None)
 
    lconf_validate_one_section_str(lconf_section_raw_str)
 
@@ -344,30 +373,39 @@ def test_lconf_emit_default_obj__ok7():
       onelinelists=LCONF_NO,
       with_comments=True
    )
+   lconf_validate_one_section_str(lconf_section_raw_str)
+
    lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Example1',
       onelinelists=LCONF_YES,
       with_comments=True
    )
+   lconf_validate_one_section_str(lconf_section_raw_str)
+
    lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Example1',
       onelinelists=LCONF_DEFAULT,
       with_comments=False
    )
+   lconf_validate_one_section_str(lconf_section_raw_str)
+
    lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Example1',
       onelinelists=LCONF_NO,
       with_comments=False
    )
+   lconf_validate_one_section_str(lconf_section_raw_str)
+
    lconf_section_raw_str = lconf_emit_default_obj(
       lconf_section__template_obj,
       'Example1',
       onelinelists=LCONF_YES,
       with_comments=False
    )
+   lconf_validate_one_section_str(lconf_section_raw_str)
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #

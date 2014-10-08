@@ -44,7 +44,7 @@ from LCONF.transform import (
 )
 from LCONF.utils import Err
 
-# noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
+# noinspection PyUnresolvedReferences
 from base_examples import (
    get_lconf_section__base_example_template_obj,
    get_lconf_section__base_example_lconf_section_raw_str,
@@ -94,7 +94,7 @@ ___END'''
       validate=True
    )
 
-   emit_result = lconf_emit(lconf_obj, onelinelists=LCONF_DEFAULT)
+   emit_result = lconf_emit(lconf_obj, onelinelists=LCONF_DEFAULT, empty_key_value_pair=True)
    eq_(lconf_section_raw_str, emit_result, msg=None)
 
    reparsed_lconf_obj = lconf_parse_section_extract_by_name(
@@ -106,7 +106,7 @@ ___END'''
    )
 
    eq_(lconf_obj, reparsed_lconf_obj, msg=None)
-   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_DEFAULT)
+   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_DEFAULT, empty_key_value_pair=True)
    eq_(lconf_section_raw_str, re_emit_result, msg=None)
 
 
@@ -115,28 +115,58 @@ def test_lconf_emit_ok1():
    """
    print('::: TEST: test_lconf_emit_ok1()')
 
-   lconf_section__template_obj = get_lconf_section__base_example_template_obj()
-   lconf_section_raw_str = get_lconf_section__base_example_lconf_section_raw_str()
+   lconf_section__template_obj = Root([
+      # Default Empty Line
+      ('#1', ''),
+      # Default Comment Line
+      ('#2', '# Comment-Line: `Key :: Value Pair`'),
+      ('first', ''),
+      ('last', ''),
+      ('sex', '', None, 'NOT-DEFINED'),
+      ('age', ''),
+      ('salary', ''),
+      ('#3', '# Comment-Line: `Key-Value-List`'),
+      ('interests', KVList(True, [])),
+      ('#4', '# Comment-Line: `Key :: Value Pair`'),
+      ('registered', ''),
+   ])
+
+   lconf_section_raw_str = r'''___SECTION :: Test Example1
+
+# Comment-Line: `Key :: Value Pair`
+first :: Joe
+last :: Smith
+sex ::
+age :: 18
+salary :: 12500
+# Comment-Line: `Key-Value-List`
+- interests :: soccer,tennis
+# Comment-Line: `Key :: Value Pair`
+registered :: False
+___END'''
 
    lconf_obj = lconf_parse_section_extract_by_name(
       lconf_section_raw_str,
-      'BaseEXAMPLE',
+      'Test Example1',
       lconf_section__template_obj,
       with_comments=True,
       validate=True
    )
 
-   emit_result = lconf_emit(lconf_obj, onelinelists=LCONF_DEFAULT)
+   emit_result = lconf_emit(lconf_obj, onelinelists=LCONF_DEFAULT, empty_key_value_pair=True)
+   eq_(lconf_section_raw_str, emit_result, msg=None)
+
    reparsed_lconf_obj = lconf_parse_section_extract_by_name(
       emit_result,
-      'BaseEXAMPLE',
+      'Test Example1',
       lconf_section__template_obj,
       with_comments=True,
       validate=True
    )
 
-   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_DEFAULT)
-   eq_(emit_result, re_emit_result, msg=None)
+   eq_(lconf_obj, reparsed_lconf_obj, msg=None)
+   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_DEFAULT, empty_key_value_pair=True)
+   eq_(lconf_section_raw_str, re_emit_result, msg=None)
 
 
 def test_lconf_emit_ok2():
@@ -144,28 +174,71 @@ def test_lconf_emit_ok2():
    """
    print('::: TEST: test_lconf_emit_ok2()')
 
-   lconf_section__template_obj = get_lconf_section__base_example_template_obj()
-   lconf_section_raw_str = get_lconf_section__base_example_lconf_section_raw_str()
+   lconf_section__template_obj = Root([
+      # Default Empty Line
+      ('#1', ''),
+      # Default Comment Line
+      ('#2', '# Comment-Line: `Key :: Value Pair`'),
+      ('first', ''),
+      ('last', ''),
+      ('sex', '', None, 'NOT-DEFINED'),
+      ('age', '', None, 25),
+      ('salary', ''),
+      ('#3', '# Comment-Line: `Key-Value-List`'),
+      ('interests', KVList(True, [])),
+      ('#4', '# Comment-Line: `Key :: Value Pair`'),
+      ('registered', ''),
+   ])
+
+   lconf_section_raw_str = r'''___SECTION :: Test Example1
+
+# Comment-Line: `Key :: Value Pair`
+first :: Joe
+last :: Smith
+sex ::
+age ::
+salary :: 12500
+# Comment-Line: `Key-Value-List`
+- interests :: soccer,tennis
+# Comment-Line: `Key :: Value Pair`
+registered :: False
+___END'''
+
+   check_str = '''___SECTION :: Test Example1
+
+# Comment-Line: `Key :: Value Pair`
+first :: Joe
+last :: Smith
+sex :: NOT-DEFINED
+age :: 25
+salary :: 12500
+# Comment-Line: `Key-Value-List`
+- interests :: soccer,tennis
+# Comment-Line: `Key :: Value Pair`
+registered :: False
+___END'''
 
    lconf_obj = lconf_parse_section_extract_by_name(
       lconf_section_raw_str,
-      'BaseEXAMPLE',
+      'Test Example1',
       lconf_section__template_obj,
       with_comments=True,
       validate=True
    )
 
-   emit_result = lconf_emit(lconf_obj, onelinelists=LCONF_NO)
+   emit_result = lconf_emit(lconf_obj, onelinelists=LCONF_DEFAULT, empty_key_value_pair=False)
+   eq_(check_str, emit_result, msg=None)
+
    reparsed_lconf_obj = lconf_parse_section_extract_by_name(
       emit_result,
-      'BaseEXAMPLE',
+      'Test Example1',
       lconf_section__template_obj,
       with_comments=True,
       validate=True
    )
 
-   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_NO)
-   eq_(emit_result, re_emit_result, msg=None)
+   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_DEFAULT, empty_key_value_pair=False)
+   eq_(check_str, re_emit_result, msg=None)
 
 
 def test_lconf_emit_ok3():
@@ -184,7 +257,7 @@ def test_lconf_emit_ok3():
       validate=True
    )
 
-   emit_result = lconf_emit(lconf_obj, onelinelists=LCONF_YES)
+   emit_result = lconf_emit(lconf_obj, onelinelists=LCONF_DEFAULT, empty_key_value_pair=True)
    reparsed_lconf_obj = lconf_parse_section_extract_by_name(
       emit_result,
       'BaseEXAMPLE',
@@ -193,7 +266,7 @@ def test_lconf_emit_ok3():
       validate=True
    )
 
-   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_YES)
+   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_DEFAULT, empty_key_value_pair=True)
    eq_(emit_result, re_emit_result, msg=None)
 
 
@@ -209,20 +282,20 @@ def test_lconf_emit_ok4():
       lconf_section_raw_str,
       'BaseEXAMPLE',
       lconf_section__template_obj,
-      with_comments=False,
+      with_comments=True,
       validate=True
    )
 
-   emit_result = lconf_emit(lconf_obj, onelinelists=LCONF_DEFAULT)
+   emit_result = lconf_emit(lconf_obj, onelinelists=LCONF_NO, empty_key_value_pair=True)
    reparsed_lconf_obj = lconf_parse_section_extract_by_name(
       emit_result,
       'BaseEXAMPLE',
       lconf_section__template_obj,
-      with_comments=False,
+      with_comments=True,
       validate=True
    )
 
-   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_DEFAULT)
+   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_NO, empty_key_value_pair=True)
    eq_(emit_result, re_emit_result, msg=None)
 
 
@@ -238,20 +311,20 @@ def test_lconf_emit_ok5():
       lconf_section_raw_str,
       'BaseEXAMPLE',
       lconf_section__template_obj,
-      with_comments=False,
+      with_comments=True,
       validate=True
    )
 
-   emit_result = lconf_emit(lconf_obj, onelinelists=LCONF_NO)
+   emit_result = lconf_emit(lconf_obj, onelinelists=LCONF_YES, empty_key_value_pair=True)
    reparsed_lconf_obj = lconf_parse_section_extract_by_name(
       emit_result,
       'BaseEXAMPLE',
       lconf_section__template_obj,
-      with_comments=False,
+      with_comments=True,
       validate=True
    )
 
-   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_NO)
+   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_YES, empty_key_value_pair=True)
    eq_(emit_result, re_emit_result, msg=None)
 
 
@@ -271,7 +344,7 @@ def test_lconf_emit_ok6():
       validate=True
    )
 
-   emit_result = lconf_emit(lconf_obj, onelinelists=LCONF_YES)
+   emit_result = lconf_emit(lconf_obj, onelinelists=LCONF_DEFAULT, empty_key_value_pair=True)
    reparsed_lconf_obj = lconf_parse_section_extract_by_name(
       emit_result,
       'BaseEXAMPLE',
@@ -280,15 +353,73 @@ def test_lconf_emit_ok6():
       validate=True
    )
 
-   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_YES)
+   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_DEFAULT, empty_key_value_pair=True)
    eq_(emit_result, re_emit_result, msg=None)
 
 
-# noinspection PyUnusedLocal
 def test_lconf_emit_ok7():
    """ Tests: test_lconf_emit_ok7
    """
    print('::: TEST: test_lconf_emit_ok7()')
+
+   lconf_section__template_obj = get_lconf_section__base_example_template_obj()
+   lconf_section_raw_str = get_lconf_section__base_example_lconf_section_raw_str()
+
+   lconf_obj = lconf_parse_section_extract_by_name(
+      lconf_section_raw_str,
+      'BaseEXAMPLE',
+      lconf_section__template_obj,
+      with_comments=False,
+      validate=True
+   )
+
+   emit_result = lconf_emit(lconf_obj, onelinelists=LCONF_NO, empty_key_value_pair=True)
+   reparsed_lconf_obj = lconf_parse_section_extract_by_name(
+      emit_result,
+      'BaseEXAMPLE',
+      lconf_section__template_obj,
+      with_comments=False,
+      validate=True
+   )
+
+   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_NO, empty_key_value_pair=True)
+   eq_(emit_result, re_emit_result, msg=None)
+
+
+def test_lconf_emit_ok8():
+   """ Tests: test_lconf_emit_ok8
+   """
+   print('::: TEST: test_lconf_emit_ok8()')
+
+   lconf_section__template_obj = get_lconf_section__base_example_template_obj()
+   lconf_section_raw_str = get_lconf_section__base_example_lconf_section_raw_str()
+
+   lconf_obj = lconf_parse_section_extract_by_name(
+      lconf_section_raw_str,
+      'BaseEXAMPLE',
+      lconf_section__template_obj,
+      with_comments=False,
+      validate=True
+   )
+
+   emit_result = lconf_emit(lconf_obj, onelinelists=LCONF_YES, empty_key_value_pair=True)
+   reparsed_lconf_obj = lconf_parse_section_extract_by_name(
+      emit_result,
+      'BaseEXAMPLE',
+      lconf_section__template_obj,
+      with_comments=False,
+      validate=True
+   )
+
+   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_YES, empty_key_value_pair=True)
+   eq_(emit_result, re_emit_result, msg=None)
+
+
+# noinspection PyUnusedLocal
+def test_lconf_emit_ok9():
+   """ Tests: test_lconf_emit_ok9
+   """
+   print('::: TEST: test_lconf_emit_ok9()')
 
    # Main `Section-Template OBJ: type: Root
    lconf_section__template_obj = Root([
@@ -373,7 +504,7 @@ ___END'''
    )
 
    eq_(lconf_obj, reparsed_lconf_obj, msg=None)
-   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_DEFAULT)
+   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_DEFAULT, empty_key_value_pair=True)
    eq_(emit_result, re_emit_result, msg=None)
 
    lconf_obj = lconf_parse_section_extract_by_name(
@@ -384,7 +515,7 @@ ___END'''
       validate=True
    )
 
-   emit_result = lconf_emit(lconf_obj, onelinelists=LCONF_NO)
+   emit_result = lconf_emit(lconf_obj, onelinelists=LCONF_NO, empty_key_value_pair=True)
 
    reparsed_lconf_obj = lconf_parse_section_extract_by_name(
       emit_result,
@@ -395,7 +526,7 @@ ___END'''
    )
 
    eq_(lconf_obj, reparsed_lconf_obj, msg=None)
-   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_NO)
+   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_NO, empty_key_value_pair=True)
    eq_(emit_result, re_emit_result, msg=None)
 
    lconf_obj = lconf_parse_section_extract_by_name(
@@ -406,7 +537,7 @@ ___END'''
       validate=True
    )
 
-   emit_result = lconf_emit(lconf_obj, onelinelists=LCONF_YES)
+   emit_result = lconf_emit(lconf_obj, onelinelists=LCONF_YES, empty_key_value_pair=True)
 
    reparsed_lconf_obj = lconf_parse_section_extract_by_name(
       emit_result,
@@ -417,7 +548,7 @@ ___END'''
    )
 
    eq_(lconf_obj, reparsed_lconf_obj, msg=None)
-   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_YES)
+   re_emit_result = lconf_emit(reparsed_lconf_obj, onelinelists=LCONF_YES, empty_key_value_pair=True)
    eq_(emit_result, re_emit_result, msg=None)
 
 
@@ -459,7 +590,7 @@ ___END'''
 
    default_lconf_obj = lconf_prepare_default_obj(lconf_section__template_obj, with_comments=False)
 
-   emit_result = lconf_emit(default_lconf_obj, onelinelists=LCONF_DEFAULT)
+   emit_result = lconf_emit(default_lconf_obj, onelinelists=LCONF_DEFAULT, empty_key_value_pair=True)
    eq_(lconf_section_raw_str, emit_result, msg=None)
 
 
@@ -473,7 +604,12 @@ if __name__ == '__main__':
    test_lconf_emit_ok4()
    test_lconf_emit_ok5()
    test_lconf_emit_ok6()
-
    test_lconf_emit_ok7()
+   test_lconf_emit_ok8()
+
+   test_lconf_emit_ok9()
 
    test_lconf_emit_expect_failure1()
+
+
+

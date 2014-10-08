@@ -41,7 +41,7 @@ from LCONF.lconf_structure_classes import (
 )
 from LCONF.main_code import lconf_prepare_and_parse_section
 
-# noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
+# noinspection PyUnresolvedReferences
 from base_examples import (
    get_lconf_section__base_example_template_obj,
    get_lconf_section__base_example_lconf_section_raw_str,
@@ -148,7 +148,7 @@ ___END
    eq_(lconf_obj['keyvalue_mapping'].key_order, ['mapping_key1', 'mapping_key2', 'mapping_key3'], msg=None)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_prepare_and_parse_section_ok2():
    """ Tests: test_lconf_prepare_and_parse_section_ok2
    """
@@ -163,8 +163,10 @@ def test_lconf_prepare_and_parse_section_ok2():
       with_comments=False,
       validate=True
    )
+
    ok_(isinstance(lconf_obj, LconfRoot), msg=None)
    ok_(isinstance(lconf_obj['key10value_mapping'], LconfKVMap), msg=None)
+   ok_(isinstance(lconf_obj['key1value_pair'], str), msg=None)
    ok_(isinstance(lconf_obj['key10value_mapping']['mapping10_key4_list'], LconfKVList), msg=None)
    ok_(isinstance(lconf_obj['key10value_mapping']['mapping10_key5_list'], LconfKVList), msg=None)
    ok_(isinstance(lconf_obj['key10value_mapping']['mapping10_key6_list'], LconfListOT), msg=None)
@@ -174,33 +176,28 @@ def test_lconf_prepare_and_parse_section_ok2():
    ok_(isinstance(
       lconf_obj['key11value_mapping']['mapping11_key2_mapping']['mapping11_key2_nested_mapping_key2_block_identifier'],
       LconfBlkI),
-      msg=None
-   )
+      msg=None)
    ok_(isinstance(
       lconf_obj['key11value_mapping']['mapping11_key2_mapping']['mapping11_key2_nested_mapping_key2_block_identifier'][
          'sky_blue_blk_name1'],
       LconfBlk),
-      msg=None
-   )
+      msg=None)
    eq_(lconf_obj['key11value_mapping']['mapping11_key2_mapping']['mapping11_key2_nested_mapping_key2_block_identifier'][
       'sky_blue_blk_name1']['blk_item_green'],
       206,
-      msg=None
-   )
+      msg=None)
 
    eq_(lconf_obj.key_order,
       ['key1value_pair', 'key2value_pair', 'key3value_pair', 'key4value_pair', 'key5value_pair', 'key6value_pair',
          'key7value_pair', 'key8value_pair', 'key9value_pair', 'key10value_mapping', 'key11value_mapping', 'key12list',
          'key13value_pairlist', 'key14list_of_color_tuples', 'key15value_pairlist', 'key16value_pairlist',
          'key17list_of_tuples', 'RepeatedBlk1'],
-      msg=None
-   )
+      msg=None)
 
    eq_(lconf_obj['key11value_mapping']['mapping11_key2_mapping']['mapping11_key2_nested_mapping_key2_block_identifier'][
       'sky_blue_blk_name1'].key_order,
       ['blk_item_red', 'blk_item_green', 'blk_item_blue'],
-      msg=None
-   )
+      msg=None)
 
    eq_(lconf_obj['key11value_mapping']['mapping11_key1'], '/home/examples', msg=None)
    ok_(isinstance(
@@ -208,7 +205,15 @@ def test_lconf_prepare_and_parse_section_ok2():
       datetime),
       msg=None
    )
+   eq_(lconf_obj['key1value_pair'], 'NOT-DEFINED', msg=None)  # `Empty-KeyValuePair-ReplacementValue` "NOT-DEFINED"
+   eq_(lconf_obj['key7value_pair'], -94599.5, msg=None)  # `Empty-KeyValuePair-ReplacementValue` "-94599.5"
+
    eq_(lconf_obj['key11value_mapping']['mapping11_key2_mapping']['mapping11_key2_nested_mapping_key3'], 'car', msg=None)
+   # `Empty-KeyValuePair-ReplacementValue` "0"
+   eq_(lconf_obj['key11value_mapping']['mapping11_key2_mapping']['mapping11_key2_nested_mapping_key2_block_identifier'][
+      'sky_blue_blk_name1']['blk_item_red'],
+      0,
+      msg=None)
 
    ok_(isinstance(lconf_obj['key14list_of_color_tuples'], LconfListOT), msg=None)
 
@@ -233,6 +238,11 @@ def test_lconf_prepare_and_parse_section_ok2():
       ['MyKey1_mapping', 'MyKey2', 'MyKey3', 'MyKey4', 'MyKey5list', 'MyKey6list', 'MyKey7list', 'MyKey8'],
       msg=None
    )
+   # `Empty-KeyValuePair-ReplacementValue` "-9999999999.055"
+   eq_(lconf_obj['RepeatedBlk1']['BLK_OBJ1']['MyKey1_mapping']['blk_mapping_key2'], 12345.99, msg=None)
+   eq_(lconf_obj['RepeatedBlk1']['BLK_OBJ2']['MyKey1_mapping']['blk_mapping_key2'], -9999999999.055, msg=None)
+   eq_(lconf_obj['RepeatedBlk1']['BLK_OBJ3']['MyKey1_mapping']['blk_mapping_key2'], 9999.999, msg=None)
+   eq_(lconf_obj['RepeatedBlk1']['BLK_OBJ4']['MyKey1_mapping']['blk_mapping_key2'], 9999.999, msg=None)
 
    eq_(lconf_obj['RepeatedBlk1']['BLK_OBJ4']['MyKey5list'], ['one item'], msg=None)
    eq_(lconf_obj['RepeatedBlk1']['BLK_OBJ4']['MyKey4'], 'GREAT LIFE', msg=None)

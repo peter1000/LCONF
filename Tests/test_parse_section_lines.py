@@ -56,14 +56,14 @@ from LCONF.transform import (
 )
 from LCONF.utils import Err
 
-# noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
+# noinspection PyUnresolvedReferences
 from base_examples import (
    get_lconf_section__base_example_template_obj,
    get_lconf_section__base_example_lconf_section_raw_str
 )
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_prepare_default_obj__parse_section_lines_ok0():
    """ Tests: test_lconf_prepare_default_obj__parse_section_lines_ok0
    """
@@ -354,7 +354,7 @@ ___END
    lconf_obj = lconf_parse_section_lines(default_lconf_obj, section_lines, section_name, lconf_section__template_obj)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 @nose_raises(Err)
 def test_lconf_section_splitlines_expect_failure1():
    """ Tests: test_lconf_section_splitlines_expect_failure1
@@ -407,7 +407,7 @@ ___END
    lconf_obj = lconf_parse_section_lines(default_lconf_obj, section_lines, section_name, lconf_section__template_obj)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 @nose_raises(ValueError)
 def test_lconf_section_splitlines_expect_failure3():
    """ Tests: test_lconf_section_splitlines_expect_failure3
@@ -436,6 +436,7 @@ def test_lconf_prepare_default_obj__parse_section_lines__base_example_ok():
 
    ok_(isinstance(lconf_obj, LconfRoot), msg=None)
    ok_(isinstance(lconf_obj['key10value_mapping'], LconfKVMap), msg=None)
+   ok_(isinstance(lconf_obj['key1value_pair'], str), msg=None)
    ok_(isinstance(lconf_obj['key10value_mapping']['mapping10_key4_list'], LconfKVList), msg=None)
    ok_(isinstance(lconf_obj['key10value_mapping']['mapping10_key5_list'], LconfKVList), msg=None)
    ok_(isinstance(lconf_obj['key10value_mapping']['mapping10_key6_list'], LconfListOT), msg=None)
@@ -474,7 +475,13 @@ def test_lconf_prepare_default_obj__parse_section_lines__base_example_ok():
       datetime),
       msg=None
    )
+   eq_(lconf_obj['key1value_pair'], 'NOT-DEFINED', msg=None)  # `Empty-KeyValuePair-ReplacementValue` "NOT-DEFINED"
+   eq_(lconf_obj['key7value_pair'], -94599.5, msg=None)  # `Empty-KeyValuePair-ReplacementValue` "-94599.5"
+
    eq_(lconf_obj['key11value_mapping']['mapping11_key2_mapping']['mapping11_key2_nested_mapping_key3'], 'car', msg=None)
+   # `Empty-KeyValuePair-ReplacementValue` "0"
+   eq_(lconf_obj['key11value_mapping']['mapping11_key2_mapping']['mapping11_key2_nested_mapping_key2_block_identifier'][
+      'sky_blue_blk_name1']['blk_item_red'], 0, msg=None)
 
    ok_(isinstance(lconf_obj['key14list_of_color_tuples'], LconfListOT), msg=None)
 
@@ -499,6 +506,11 @@ def test_lconf_prepare_default_obj__parse_section_lines__base_example_ok():
       ['MyKey1_mapping', 'MyKey2', 'MyKey3', 'MyKey4', 'MyKey5list', 'MyKey6list', 'MyKey7list', 'MyKey8'],
       msg=None
    )
+   # `Empty-KeyValuePair-ReplacementValue` "-9999999999.055"
+   eq_(lconf_obj['RepeatedBlk1']['BLK_OBJ1']['MyKey1_mapping']['blk_mapping_key2'], 12345.99, msg=None)
+   eq_(lconf_obj['RepeatedBlk1']['BLK_OBJ2']['MyKey1_mapping']['blk_mapping_key2'], -9999999999.055, msg=None)
+   eq_(lconf_obj['RepeatedBlk1']['BLK_OBJ3']['MyKey1_mapping']['blk_mapping_key2'], 9999.999, msg=None)
+   eq_(lconf_obj['RepeatedBlk1']['BLK_OBJ4']['MyKey1_mapping']['blk_mapping_key2'], 9999.999, msg=None)
 
    eq_(lconf_obj['RepeatedBlk1']['BLK_OBJ4']['MyKey5list'], ['one item'], msg=None)
    eq_(lconf_obj['RepeatedBlk1']['BLK_OBJ4']['MyKey4'], 'GREAT LIFE', msg=None)
@@ -681,3 +693,4 @@ if __name__ == '__main__':
 
    test_lconf_section_splitlines__trailing_space__expect_failure()
    test_lconf_section_splitlines__missing_identifier__expect_failure()
+

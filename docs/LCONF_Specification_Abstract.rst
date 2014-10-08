@@ -12,21 +12,18 @@ LCONF: Specification Abstract
 
 `LCONF` is a light - human-friendly, simple readable data serialization format for dynamic configuration.
 
-.. warning:: the `LCONF Specification 6.0` is not backwards compatible
+- in many situations `LCONF` is a suitable replacement for `YAML <http://www.yaml.org/>`_
+- `LCONF` can be used to replace `JSON <http://json.org/>`_ in many cases
 
-   - it allows deep nesting of `Repeated Blocks` and `Key-Value Mappings`
+.. note:: LCONF_Specification-7.0
 
-   - it introduces two new identifier for `Key-Value Mappings` and for all `Lists`
+   `LCONF Specification 7.0` should be backwards compatible with version 6.0
 
-      - now all `special LCONF Structures` have identifiers
+   - adds support for setting: optional `Empty-KeyValuePair-ReplacementValues` in the
 
-   - added support for setting empty `Key-Value-Lists`
+      :ref:`LCONF-Default-Template-Structure <lconf_default_template_structure>`
 
-   - changed `Key :: Value-Lists`: got rid of the square brackets
-
-   - it adds `List-Of-Tuples`: useful for multidimensional lists or tables e.g. csv data
-
-   - allows empty `Key-Value Mappings`
+      - for instance: a integer value is expected but one wants for empty `LCONF Key :: Value Pairs` to return -1 or whatever
 
 
 Designed around
@@ -141,7 +138,11 @@ Value Transformation is mostly used for type transformation (type casting) becau
 Within the `LCONF-Default-Template-Structure` transformation functions can only be applied to:
    `Key :: Value Pairs`: each one can have a separate `transformation function`
 
-      .. warning:: Empty values with `transformation-function` are returned as empty strings
+      .. important:: Empty values with `transformation-function` are returned as empty strings
+
+      .. seealso:: EXCEPTION: **Empty-KeyValuePair-ReplacementValues**
+
+         :ref:`Empty Key :: Value Pairs`<empty_key_value_pairs>`
 
    `Key :: Value-Lists` and `Key-Value-Lists`: can have only one `transformation function` which will be applied to each item
    in the list

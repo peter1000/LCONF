@@ -635,7 +635,7 @@ def lconf_validate_file(path_to_lconf_file):
    return True
 
 
-def _prepare_default_obj__with_comments(input_obj):
+def _prepare_default_obj__with_comments(input_obj, key):
    """ Helper: to make a recursively copy of the lconf_section__template_obj: with the same `key_order` and keeping any
    `Default-Comment/Empty Lines`
 
@@ -649,44 +649,67 @@ def _prepare_default_obj__with_comments(input_obj):
 
    - The values tuples are overwritten with the default value: the transform function info is skipped
 
+      .. important:: `Empty-KeyValuePair-ReplacementValues`
+
+         if a default `Key :: Value Pair` has an empty value (empty string) and a `Empty-KeyValuePair-ReplacementValue` is
+         defined the `lconf_prepare_default_obj` will have the supplied `Empty-KeyValuePair-ReplacementValue`
+
    .. note:: Dummy-Blocks are not prepared by default but the function must be called separately with the dummy-blk obj
 
-   :param input_obj: (obj) instance of main section template object (or sub parts of it) which has all the info: inclusive
-      any `transform func`
+   :param input_obj: (obj) instance of main section template object (or sub parts of it)
+   :param key: (str) current key to prepare
 
    :return: (obj) adjusted/prepared copy of the lconf_section__template_obj
    """
-   if input_obj.__class__ is str:
-      return input_obj
-   elif input_obj.__class__ in {bool, int, float}:
-      return input_obj
-   elif input_obj.__class__ is KVMap:
-      return LconfKVMap({key: _prepare_default_obj__with_comments(input_obj[key][0]) for key in input_obj.key_order},
-         input_obj.key_order)
-   elif input_obj.__class__ is KVList:
-      return LconfKVList(input_obj, input_obj.use_oneline)
-   elif input_obj.__class__ is Blk:
-      return LconfBlk({key: _prepare_default_obj__with_comments(input_obj[key][0]) for key in input_obj.key_order},
-         input_obj.key_order)
-   elif input_obj.__class__ is BlkI:
-      # Note: the `input_obj['dummy_blk']` blk is prepared each time anew when it gets parsed: seems to be faster
+   tmp_key_obj = input_obj[key]
+   # Special case BLK: is not a tuple
+   if tmp_key_obj.__class__ is Blk:
+      # using the: tmp_key_obj
+      return LconfBlk(
+         {key: _prepare_default_obj__with_comments(tmp_key_obj, key) for key in tmp_key_obj.key_order},
+         tmp_key_obj.key_order,
+         tmp_key_obj.key_empty_replacementvalue
+      )
+   else:
+      tmp_value_obj = input_obj[key][0]
+   if tmp_value_obj.__class__ is str:
+      if tmp_value_obj:
+         return tmp_value_obj
+      # CHECK for: `Empty-KeyValuePair-ReplacementValue`: EMPTY STRING VALUE plus tuple of 3
+      elif len(input_obj[key]) > 2:
+         # replacement_value
+         return input_obj[key][2]
+      else:
+         return tmp_value_obj
+   elif tmp_value_obj.__class__ in {bool, int, float}:
+      return tmp_value_obj
+   elif tmp_value_obj.__class__ is KVMap:
+      return LconfKVMap(
+         {key: _prepare_default_obj__with_comments(tmp_value_obj, key) for key in tmp_value_obj.key_order},
+         tmp_value_obj.key_order,
+         tmp_value_obj.key_empty_replacementvalue
+      )
+   elif tmp_value_obj.__class__ is KVList:
+      return LconfKVList(tmp_value_obj, tmp_value_obj.use_oneline)
+   elif tmp_value_obj.__class__ is BlkI:
+      # Note: the `tmp_value_obj['dummy_blk']` blk is prepared each time anew when it gets parsed: seems to be faster
       # INIT without any Block-Names
       data = {}
       block_names_list = []
-      temp_obj = LconfBlkI(data, block_names_list, input_obj.min_required_blocks, input_obj.max_allowed_blocks)
-      temp_obj.set_class__dict__item('has_comments', True)
+      temp_obj = LconfBlkI(data, block_names_list, tmp_value_obj.min_required_blocks, tmp_value_obj.max_allowed_blocks)
+      temp_obj.set_class__dict__item('has_comments', False)
       return temp_obj
-   elif input_obj.__class__ is ListOT:
-      return LconfListOT(input_obj, input_obj.column_names, input_obj.column_names_idx_lookup,
-         input_obj.column_names_counted, input_obj.column_replace_missing)
+   elif tmp_value_obj.__class__ is ListOT:
+      return LconfListOT(tmp_value_obj, tmp_value_obj.column_names, tmp_value_obj.column_names_idx_lookup,
+         tmp_value_obj.column_names_counted, tmp_value_obj.column_replace_missing)
    # the ones which are not so often expected
-   elif input_obj.__class__ is datetime:
-      return input_obj
+   elif tmp_value_obj.__class__ is datetime:
+      return tmp_value_obj
    else:
-      return copy.copy(input_obj)
+      return copy.copy(tmp_value_obj)
 
 
-def _prepare_default_obj__no_comments(input_obj):
+def _prepare_default_obj__no_comments(input_obj, key):
    """ Helper: to make a recursively copy of the lconf_section__template_obj: with the same `key_order` but without any
    `Default-Comment/Empty Lines`
 
@@ -700,42 +723,64 @@ def _prepare_default_obj__no_comments(input_obj):
 
    - The values tuples are overwritten with the default value: the transform function info is skipped
 
+      .. important:: `Empty-KeyValuePair-ReplacementValues`
+
+         if a default `Key :: Value Pair` has an empty value (empty string) and a `Empty-KeyValuePair-ReplacementValue` is
+         defined the `lconf_prepare_default_obj` will have the supplied `Empty-KeyValuePair-ReplacementValue`
+
    .. note:: Dummy-Blocks are not prepared by default but the function must be called separately with the dummy-blk obj
 
-   :param input_obj: (obj) instance of main section template object (or sub parts of it) which has all the info: inclusive
-      any `transform func`
+   :param input_obj: (obj) instance of main section template object (or sub parts of it)
+   :param key: (str) current key to prepare
 
    :return: (obj) adjusted/prepared copy of the lconf_section__template_obj
    """
-   if input_obj.__class__ is str:
-      return input_obj
-   elif input_obj.__class__ in {bool, int, float}:
-      return input_obj
-   elif input_obj.__class__ is KVMap:
+   tmp_key_obj = input_obj[key]
+   # Special case BLK: is not a tuple
+   if tmp_key_obj.__class__ is Blk:
+      # using the: tmp_key_obj
+      return LconfBlk(
+         {key: _prepare_default_obj__no_comments(tmp_key_obj, key) for key in tmp_key_obj.key_order_no_comments},
+         tmp_key_obj.key_order_no_comments,
+         tmp_key_obj.key_empty_replacementvalue
+      )
+   else:
+      tmp_value_obj = input_obj[key][0]
+   if tmp_value_obj.__class__ is str:
+      if tmp_value_obj:
+         return tmp_value_obj
+      # CHECK for: `Empty-KeyValuePair-ReplacementValue`: EMPTY STRING VALUE plus tuple of 3
+      elif len(input_obj[key]) > 2:
+         # replacement_value
+         return input_obj[key][2]
+      else:
+         return tmp_value_obj
+   elif tmp_value_obj.__class__ in {bool, int, float}:
+      return tmp_value_obj
+   elif tmp_value_obj.__class__ is KVMap:
       return LconfKVMap(
-         {key: _prepare_default_obj__no_comments(input_obj[key][0]) for key in input_obj.key_order_no_comments},
-         input_obj.key_order_no_comments)
-   elif input_obj.__class__ is KVList:
-      return LconfKVList(input_obj, input_obj.use_oneline)
-   elif input_obj.__class__ is Blk:
-      return LconfBlk({key: _prepare_default_obj__no_comments(input_obj[key][0]) for key in input_obj.key_order_no_comments},
-         input_obj.key_order_no_comments)
-   elif input_obj.__class__ is BlkI:
-      # Note: the `input_obj['dummy_blk']` blk is prepared each time anew when it gets parsed: seems to be faster
+         {key: _prepare_default_obj__no_comments(tmp_value_obj, key) for key in tmp_value_obj.key_order_no_comments},
+         tmp_value_obj.key_order_no_comments,
+         tmp_value_obj.key_empty_replacementvalue
+      )
+   elif tmp_value_obj.__class__ is KVList:
+      return LconfKVList(tmp_value_obj, tmp_value_obj.use_oneline)
+   elif tmp_value_obj.__class__ is BlkI:
+      # Note: the `tmp_value_obj['dummy_blk']` blk is prepared each time anew when it gets parsed: seems to be faster
       # INIT without any Block-Names
       data = {}
       block_names_list = []
-      temp_obj = LconfBlkI(data, block_names_list, input_obj.min_required_blocks, input_obj.max_allowed_blocks)
+      temp_obj = LconfBlkI(data, block_names_list, tmp_value_obj.min_required_blocks, tmp_value_obj.max_allowed_blocks)
       temp_obj.set_class__dict__item('has_comments', False)
       return temp_obj
-   elif input_obj.__class__ is ListOT:
-      return LconfListOT(input_obj, input_obj.column_names, input_obj.column_names_idx_lookup,
-         input_obj.column_names_counted, input_obj.column_replace_missing)
+   elif tmp_value_obj.__class__ is ListOT:
+      return LconfListOT(tmp_value_obj, tmp_value_obj.column_names, tmp_value_obj.column_names_idx_lookup,
+         tmp_value_obj.column_names_counted, tmp_value_obj.column_replace_missing)
    # the ones which are not so often expected
-   elif input_obj.__class__ is datetime:
-      return input_obj
+   elif tmp_value_obj.__class__ is datetime:
+      return tmp_value_obj
    else:
-      return copy.copy(input_obj)
+      return copy.copy(tmp_value_obj)
 
 
 def lconf_prepare_default_obj(lconf_section__template_obj, with_comments=False):
@@ -744,8 +789,13 @@ def lconf_prepare_default_obj(lconf_section__template_obj, with_comments=False):
 
    .. seealso:: _prepare_default_obj__with_comments(), _prepare_default_obj__no_comments()
 
+   .. important:: `Empty-KeyValuePair-ReplacementValues`
+
+      if a default `Key :: Value Pair` has an empty value (empty string) and a `Empty-KeyValuePair-ReplacementValue` is
+      defined the `lconf_prepare_default_obj` will have the supplied `Empty-KeyValuePair-ReplacementValue`
+
    :param lconf_section__template_obj: (obj) instance of main section template object which has all the info: inclusive any
-      `l_transform func` type-conversion
+      `l_transform func` type-conversion and any optional `Empty-KeyValuePair-ReplacementValues`
 
    :param with_comments: (bool) option to parse also any defined: default empty or comment line
 
@@ -755,12 +805,20 @@ def lconf_prepare_default_obj(lconf_section__template_obj, with_comments=False):
    :return: (lconf_default_obj obj) prepared copy of the lconf_section__template_obj
    """
    if with_comments:
-      lconf_default_obj = LconfRoot({key: _prepare_default_obj__with_comments(lconf_section__template_obj[key][0]) for key in
-         lconf_section__template_obj.key_order}, lconf_section__template_obj.key_order)
+      lconf_default_obj = LconfRoot(
+         {key: _prepare_default_obj__with_comments(lconf_section__template_obj, key) for key in
+            lconf_section__template_obj.key_order},
+         lconf_section__template_obj.key_order,
+         lconf_section__template_obj.key_empty_replacementvalue
+      )
       lconf_default_obj.set_class__dict__item('has_comments', True)
    else:
-      lconf_default_obj = LconfRoot({key: _prepare_default_obj__no_comments(lconf_section__template_obj[key][0]) for key in
-         lconf_section__template_obj.key_order_no_comments}, lconf_section__template_obj.key_order_no_comments)
+      lconf_default_obj = LconfRoot(
+         {key: _prepare_default_obj__no_comments(lconf_section__template_obj, key) for key in
+            lconf_section__template_obj.key_order_no_comments},
+         lconf_section__template_obj.key_order_no_comments,
+         lconf_section__template_obj.key_empty_replacementvalue
+      )
       lconf_default_obj.set_class__dict__item('has_comments', False)
    return lconf_default_obj
 
@@ -792,12 +850,20 @@ def lconf_prepare_and_parse_section(lconf_section_raw_str, lconf_section__templa
       lconf_validate_one_section_str(lconf_section_raw_str)
    # Prepare
    if with_comments:
-      lconf_default_obj = LconfRoot({key: _prepare_default_obj__with_comments(lconf_section__template_obj[key][0]) for key in
-         lconf_section__template_obj.key_order}, lconf_section__template_obj.key_order)
+      lconf_default_obj = LconfRoot(
+         {key: _prepare_default_obj__with_comments(lconf_section__template_obj, key) for key in
+            lconf_section__template_obj.key_order},
+         lconf_section__template_obj.key_order,
+         lconf_section__template_obj.key_empty_replacementvalue
+      )
       lconf_default_obj.set_class__dict__item('has_comments', True)
    else:
-      lconf_default_obj = LconfRoot({key: _prepare_default_obj__no_comments(lconf_section__template_obj[key][0]) for key in
-         lconf_section__template_obj.key_order_no_comments}, lconf_section__template_obj.key_order_no_comments)
+      lconf_default_obj = LconfRoot(
+         {key: _prepare_default_obj__no_comments(lconf_section__template_obj, key) for key in
+            lconf_section__template_obj.key_order_no_comments},
+         lconf_section__template_obj.key_order_no_comments,
+         lconf_section__template_obj.key_empty_replacementvalue
+      )
       lconf_default_obj.set_class__dict__item('has_comments', False)
    # Parse
    section_lines = lconf_section_raw_str.splitlines()
@@ -811,7 +877,7 @@ def lconf_prepare_and_parse_section_lines(section_lines, section_name, lconf_sec
    :param section_lines: (list) which contains one LCONF-Section raw string already split into lines
    :param section_name: (str) already extracted section name
    :param lconf_section__template_obj: (obj) instance of main section template object which has all the info: inclusive any
-      `l_transform`
+      `l_transform func` type-conversion and any optional `Empty-KeyValuePair-ReplacementValues`
    :param with_comments: (bool) option to parse also any defined: default empty or comment line
 
          - if True: any `Default-Comment/Empty Lines` are parse
@@ -826,19 +892,26 @@ def lconf_prepare_and_parse_section_lines(section_lines, section_name, lconf_sec
 
    """
    if with_comments:
-      lconf_default_obj = LconfRoot({key: _prepare_default_obj__with_comments(lconf_section__template_obj[key][0]) for key in
-         lconf_section__template_obj.key_order}, lconf_section__template_obj.key_order)
+      lconf_default_obj = LconfRoot({key: _prepare_default_obj__with_comments(lconf_section__template_obj, key) for key in
+         lconf_section__template_obj.key_order},
+         lconf_section__template_obj.key_order,
+         lconf_section__template_obj.key_empty_replacementvalue
+      )
       lconf_default_obj.set_class__dict__item('has_comments', True)
    else:
-      lconf_default_obj = LconfRoot({key: _prepare_default_obj__no_comments(lconf_section__template_obj[key][0]) for key in
-         lconf_section__template_obj.key_order_no_comments}, lconf_section__template_obj.key_order_no_comments)
+      lconf_default_obj = LconfRoot(
+         {key: _prepare_default_obj__no_comments(lconf_section__template_obj, key) for key in
+            lconf_section__template_obj.key_order_no_comments},
+         lconf_section__template_obj.key_order_no_comments,
+         lconf_section__template_obj.key_empty_replacementvalue
+      )
       lconf_default_obj.set_class__dict__item('has_comments', False)
    # Parse parse_section_lines
    return lconf_parse_section_lines(lconf_default_obj, section_lines, section_name, lconf_section__template_obj)
 
 
 def _check_correct_number_of_blocks(input_obj):
-   """ Helper: to check recursively if the parsed lconf object's `Repeated-Blocks
+   """ Helper: to check recursively if the parsed lconf object's `Repeated-Blocks` has the correct number of Block-Names
 
    :param input_obj: (obj) instance of parsed lconf object (or sub parts of it)
    """
@@ -875,7 +948,7 @@ def lconf_parse_section_lines(lconf_default_obj, section_lines, section_name, lc
    :param section_lines: (list) which contains one LCONF-Section raw string already split into lines
    :param section_name: (str) already extracted section name
    :param lconf_section__template_obj: (obj) instance of main section template object which has all the info: inclusive any
-      `l_transform`
+      `l_transform func` type-conversion and any optional `Empty-KeyValuePair-ReplacementValues`
    :return: (obj) updated lconf_default_obj attributes updated by the data in section_lines
 
       - additionally updated: attributes
@@ -907,7 +980,7 @@ def lconf_parse_section_lines(lconf_default_obj, section_lines, section_name, lc
    cur_template_obj = lconf_section__template_obj
    cur_transform_func = None
 
-   del section_lines[0]    # This is faster than making a slice copy: section_lines[1:]
+   del section_lines[0]  # This is faster than making a slice copy: section_lines[1:]
 
    prepared_lines = [
       # FORMAT:  orig_line, cur_indent, line_no_cur_indent
@@ -1064,9 +1137,9 @@ def lconf_parse_section_lines(lconf_default_obj, section_lines, section_name, lc
          elif orig_stack_situation == is_blk:
             # Add the Block-Name: with a new _prepare_default_obj Block
             if cur_adjust_obj.has_comments:
-               cur_adjust_obj[line_no_indent] = _prepare_default_obj__with_comments(cur_template_obj['dummy_blk'])
+               cur_adjust_obj[line_no_indent] = _prepare_default_obj__with_comments(cur_template_obj, 'dummy_blk')
             else:
-               cur_adjust_obj[line_no_indent] = _prepare_default_obj__no_comments(cur_template_obj['dummy_blk'])
+               cur_adjust_obj[line_no_indent] = _prepare_default_obj__no_comments(cur_template_obj, 'dummy_blk')
 
             # Check NONE Empty one
 
@@ -1094,7 +1167,7 @@ def lconf_parse_section_lines(lconf_default_obj, section_lines, section_name, lc
 
          # Root: check any new situation: no need to do anything here: orig_stack_situation == is_root
 
-         #  ====  ==== ==== check new orig_stack_situation ====  ==== ====   #
+         # ====  ==== ==== check new orig_stack_situation ====  ==== ====   #
          else:
             # `Key-Value-List` / Key :: Value-Lists / `List-Of-Tuples` Identifier
             if first_char_cur_line == '-':
@@ -1222,20 +1295,28 @@ def lconf_parse_section_lines(lconf_default_obj, section_lines, section_name, lc
 
             # `Key :: Value Pair`:  we checked already for: Key :: Value-Lists
             elif ' ::' in line_no_indent:
+               temp_name = line_no_indent[:-3]
                if ':: ' in line_no_indent:
                   name, value = line_no_indent.split(' :: ', 1)
                   # TRANSFORM CHECK: len more than 1
                   if len(cur_template_obj[name]) > 1:
-                     cur_adjust_obj[name] = cur_template_obj[name][1](value, orig_line)
+                     # check None: in case one uses no transform function but a `Empty-KeyValuePair-ReplacementValue`
+                     if cur_template_obj[name][1] is None:
+                        cur_adjust_obj[name] = value
+                     else:
+                        # use transformation function
+                        cur_adjust_obj[name] = cur_template_obj[name][1](value, orig_line)
                   else:
                      cur_adjust_obj[name] = value
-               # Empty
+               # Empty: Check usage of any `Empty-KeyValuePair-ReplacementValue`
+               elif len(cur_template_obj[temp_name]) > 2:
+                  cur_adjust_obj[temp_name] = cur_template_obj[temp_name][2]
                else:
-                  cur_adjust_obj[line_no_indent[:-3]] = ''
+                  cur_adjust_obj[temp_name] = ''
 
             # SOMETHING WRONG SHOULD NEVER REACH THIS
             else:
-               raise Err('lconf_validate_one_section_str_new', [
+               raise Err('lconf_parse_section_lines', [
                   'SectionName: {}'.format(section_name),
                   'SOMETHING WRONG SHOULD NEVER REACH THIS: ERROR',
                   '  Maybe a missing `List, Mapping or Block Identifier` but could be anything else.',
@@ -1243,7 +1324,6 @@ def lconf_parse_section_lines(lconf_default_obj, section_lines, section_name, lc
                ])
 
    lconf_default_obj.set_class__dict__item('is_parsed', True)
-
    # check_correct_number_of_blocks
    for key in lconf_default_obj.key_order:
       _check_correct_number_of_blocks(lconf_default_obj[key])
@@ -1313,12 +1393,20 @@ def lconf_parse_section_extract_by_name(source, section_name, lconf_section__tem
       lconf_validate_one_section_str(lconf_section_raw_str)
    # Prepare
    if with_comments:
-      lconf_default_obj = LconfRoot({key: _prepare_default_obj__with_comments(lconf_section__template_obj[key][0]) for key in
-         lconf_section__template_obj.key_order}, lconf_section__template_obj.key_order)
+      lconf_default_obj = LconfRoot(
+         {key: _prepare_default_obj__with_comments(lconf_section__template_obj, key) for key in
+            lconf_section__template_obj.key_order},
+         lconf_section__template_obj.key_order,
+         lconf_section__template_obj.key_empty_replacementvalue
+      )
       lconf_default_obj.set_class__dict__item('has_comments', True)
    else:
-      lconf_default_obj = LconfRoot({key: _prepare_default_obj__no_comments(lconf_section__template_obj[key][0]) for key in
-         lconf_section__template_obj.key_order_no_comments}, lconf_section__template_obj.key_order_no_comments)
+      lconf_default_obj = LconfRoot(
+         {key: _prepare_default_obj__no_comments(lconf_section__template_obj, key) for key in
+            lconf_section__template_obj.key_order_no_comments},
+         lconf_section__template_obj.key_order_no_comments,
+         lconf_section__template_obj.key_empty_replacementvalue
+      )
       lconf_default_obj.set_class__dict__item('has_comments', False)
    # Parse
    section_lines = lconf_section_raw_str.splitlines()
@@ -1326,16 +1414,23 @@ def lconf_parse_section_extract_by_name(source, section_name, lconf_section__tem
    return lconf_parse_section_lines(lconf_default_obj, section_lines, section_name, lconf_section__template_obj)
 
 
-def _output_helper_emit(result_, key_, item_value_, onelinelists_, indent, has_comments):
+def _output_helper_emit(result_, key_, item_lconf_obj, onelinelists_, empty_key_value_pair_, indent, has_comments):
    """ Helper for output: processes a MAIN or Block-Key
 
    :param result_:
    :param key_:
-   :param item_value_:
+   :param item_lconf_obj:
    :param onelinelists_:
+   :param empty_key_value_pair_:
    :param indent:
    :param has_comments:
    """
+   #print('\n\n=== key_: ', key_, ' item_lconf_obj: ', type(item_lconf_obj), item_lconf_obj)
+
+   item_value_ = item_lconf_obj[key_]
+   #print('\n    key_: ', key_, ' item_value_: ', type(item_value_), item_value_)
+
+
    do_rest = True
    if has_comments:
       # Default Comment/Empty Line
@@ -1350,14 +1445,31 @@ def _output_helper_emit(result_, key_, item_value_, onelinelists_, indent, has_c
    if do_rest:
       if item_value_.__class__ is str:
          if item_value_:
-            result_.append('{}{} :: {}'.format(indent, key_, item_value_))
+            if empty_key_value_pair_:
+               # CHECK: `Empty-KeyValuePair-ReplacementValue`
+               if key_ in item_lconf_obj.key_empty_replacementvalue:
+                  if item_lconf_obj.key_empty_replacementvalue[key_] == item_value_:
+                     result_.append('{}{} ::'.format(indent, key_))
+                  else:
+                     result_.append('{}{} :: {}'.format(indent, key_, item_value_))
+               else:
+                  result_.append('{}{} :: {}'.format(indent, key_, item_value_))
+            else:
+               result_.append('{}{} :: {}'.format(indent, key_, item_value_))
          else:
             result_.append('{}{} ::'.format(indent, key_))
       # `Key-Value-Mapping`
       elif item_value_.__class__ is LconfKVMap:
          result_.append('{}. {}'.format(indent, key_))
          for mapping_key in item_value_.key_order:
-            _output_helper_emit(result_, mapping_key, item_value_[mapping_key], onelinelists_, indent + '   ', has_comments)
+            _output_helper_emit(
+               result_,
+               mapping_key,
+               item_value_,
+               onelinelists_,
+               empty_key_value_pair_,
+               indent + '   ', has_comments
+            )
       elif item_value_.__class__ is LconfKVList:
          if onelinelists_ == LCONF_DEFAULT:
             use_oneline_list_type = LCONF_YES if item_value_.use_oneline else LCONF_NO
@@ -1389,13 +1501,30 @@ def _output_helper_emit(result_, key_, item_value_, onelinelists_, indent, has_c
             result_.append('{}   {}'.format(indent, blk_name))
             blk_obj = item_value_[blk_name]
             for mapping_key in blk_obj.key_order:
-               _output_helper_emit(result_, mapping_key, blk_obj[mapping_key], onelinelists_, indent + '      ',
-                  has_comments)  # indent: 3 for blk-name + 3 new for the blk items
+               _output_helper_emit(
+                  result_,
+                  mapping_key,
+                  blk_obj,
+                  onelinelists_,
+                  empty_key_value_pair_,
+                  indent + '      ',
+                  has_comments
+               )  # indent: 3 for blk-name + 3 new for the blk items
       else:
-         result_.append('{}{} :: {}'.format(indent, key_, item_value_))
+         if empty_key_value_pair_:
+            # CHECK: `Empty-KeyValuePair-ReplacementValue`
+            if key_ in item_lconf_obj.key_empty_replacementvalue:
+               if item_lconf_obj.key_empty_replacementvalue[key_] == item_value_:
+                  result_.append('{}{} ::'.format(indent, key_))
+               else:
+                  result_.append('{}{} :: {}'.format(indent, key_, item_value_))
+            else:
+               result_.append('{}{} :: {}'.format(indent, key_, item_value_))
+         else:
+            result_.append('{}{} :: {}'.format(indent, key_, item_value_))
 
 
-def lconf_emit(lconf_section_obj, onelinelists=LCONF_DEFAULT):
+def lconf_emit(lconf_section_obj, onelinelists=LCONF_DEFAULT, empty_key_value_pair=True):
    """ Return a section_string from a lconf_section_obj
 
    .. note::
@@ -1406,20 +1535,42 @@ def lconf_emit(lconf_section_obj, onelinelists=LCONF_DEFAULT):
    :param lconf_section_obj: (obj) instance of main section object which will be dumped
    :param onelinelists: (CONSTANTS) defines how list (`Key :: Value-Lists` and `Key-Value-Lists`) items are emitted
 
-         uses the CONSTANTS:
+      .. table:: Used CONSTANTS
+         :header-columns: 0
+         :column-alignment: left center
+         :column-dividers: none single
 
-         - LCONF_NO: all list items are dumped on separate lines using indentation
+         ============= =====================================================================================================
+         CONSTANTS
+         ============= =====================================================================================================
+         LCONF_NO      all list items are dumped on separate lines using indentation
+         LCONF_YES     all list items are dumped on the same line as the key separated by ` :: ` in an comma separated list
+         LCONF_DEFAULT uses one of the two above for each list the option defined in the `LCONF-Default-Template-Structure`
+         ============= =====================================================================================================
+
+      .. lconf-example:: LCONF output using: `LCONF_NO`
+
+         .. code-block:: lconf
 
             - KEY1
                  - listitem1
                  - listitem2
 
-         - LCONF_YES: all list items are dumped on the same line as the key separated by ` :: ` in an comma separated list
+      .. lconf-example:: LCONF output using: `LCONF_YES`
+
+         .. code-block:: lconf
 
             - KEY1 :: [listitem1,listitem2]
 
-         - LCONF_DEFAULT: uses one of the two above for each list the option defined in the:
-            `LCONF-Default-Template-Structure`
+   :param empty_key_value_pair: (bool)
+
+      This is used when the :ref:`LCONF-Default-Template-Structure <lconf_default_template_structure>` has implemented an
+      `Empty-KeyValuePair-ReplacementValue`
+
+      if the actual value of the `lconf_section_obj` is the same as the defined `Empty-KeyValuePair-ReplacementValue`
+
+         - if `empty_key_value_pair` is True: an :ref:`Empty Key :: Value Pair`<empty_key_value_pairs>` is emitted
+         - if `empty_key_value_pair` is False: the actual value of the `lconf_section_obj` is emitted
 
    :return: (str) a LCONF text string
    :raise Err:
@@ -1430,7 +1581,7 @@ def lconf_emit(lconf_section_obj, onelinelists=LCONF_DEFAULT):
       # loop through main (root) LCONF OBJ
       has_comments = lconf_section_obj.has_comments  # get it once in a var
       for key in lconf_section_obj.key_order:
-         _output_helper_emit(result, key, lconf_section_obj[key], onelinelists, '', has_comments)
+         _output_helper_emit(result, key, lconf_section_obj, onelinelists, empty_key_value_pair, '', has_comments)
    else:
       raise Err('lconf_emit', [
          'LCONF NOT PARSED ERROR: The `lconf_section_obj` seems not be parsed.',
@@ -1515,7 +1666,7 @@ def lconf_emit_default_obj(lconf_section__template_obj, section_name, onelinelis
    """ Return a section_string from a none parsed lconf_section_obj
 
    :param lconf_section__template_obj: (obj) instance of main section template object which has all the info: inclusive any
-      `transform func` type-conversion
+      `l_transform func` type-conversion and any optional `Empty-KeyValuePair-ReplacementValues`
    :param section_name: (str) section name: to use
    :param onelinelists: (CONSTANTS) defines how list (`Key :: Value-Lists` and `Key-Value-Lists`) items are emitted
 

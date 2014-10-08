@@ -38,6 +38,8 @@ this module: `LCONF/LconfStructureClasses.py`
       ___SECTION :: Example LCONF Root
       key1 :: value1
       key2 :: value2
+      key3 :: value3
+      key4 ::
       # Comment-Line: Root/Main LCONF-Section END TAG Line
       ___END
 
@@ -48,10 +50,12 @@ this module: `LCONF/LconfStructureClasses.py`
    .. code-block:: python3
 
       example_lconf_template = Root([
-         # Comment-Line: Root/Main key value pair
+         ('#1', '# Comment-Line: Root/Main key value pair'),
          ('key1', 'default_value1'),
-         # Comment-Line: Root/Main key value pair with transform_function
          ('key2', 'default_value2', transform_function),
+         ('#2', '# Comment: Root/Main key value pair with transform_function and `Empty-KeyValuePair-ReplacementValue`'),
+         ('key3', 'default_value3', transform_function, 'empty_replacement_value3'),
+         ('key4', 'default_value4', transform_function, 'empty_replacement_value4'),
       ])
 
 
@@ -71,6 +75,8 @@ LCONF `Key-Value-Mapping`: uses the **KVMap class**
       . key_value_mapping
          key1 :: value1
          key2 :: value2
+         key3 :: value3
+         key4 ::
       ___END
 
 .. python-example:: Example `LCONF-Default-Template-Structure`: using class: KVMap
@@ -79,9 +85,13 @@ LCONF `Key-Value-Mapping`: uses the **KVMap class**
 
       example_lconf_template = Root([
          # Comment-Line: below is a Main `Key-Value-Mapping`
-         ('key_value_mapping', KVMap([
+            ('key_value_mapping', KVMap([
+            ('#1', '# Comment-Line: Root/Main key value pair'),
             ('key1', 'default_value1'),
             ('key2', 'default_value2', transform_function),
+            ('#2', '# Comment: Root/Main key value pair with transform_function and  `Empty-KeyValuePair-ReplacementValue`'),
+            ('key3', 'default_value3', transform_function, 'empty_replacement_value3'),
+            ('key4', 'default_value4', transform_function, 'empty_replacement_value4'),
          ])),
       ])
 
@@ -113,7 +123,7 @@ The implementation of them are the same except that the parameter `use_oneline` 
    .. code-block:: python3
 
       example_lconf_template = Root([
-         # Comment-Line: below is a Main `Key :: Value-List`: use_oneline is True
+         ('#1', '# Comment-Line: below is a Main `Key :: Value-List`: use_oneline is True'),
          ('list', KVList(True, ['default_value1', 'default_value2']))
       ])
 
@@ -122,7 +132,7 @@ The implementation of them are the same except that the parameter `use_oneline` 
    .. code-block:: python3
 
       example_lconf_template = Root([
-         # Comment-Line: below is a Main `Key :: Value-List`: use_oneline is True
+         ('#1', '# Comment-Line: below is a Main `Key :: Value-List`: with transform_function - use_oneline is True '),
          ('list', KVList(True, ['default_value1', 'default_value2']), transform_function)
       ])
 
@@ -154,7 +164,7 @@ LCONF `Key-Value-List`: uses the **KVList class**
    .. code-block:: python3
 
       example_lconf_template = Root([
-         # Comment-Line: below is a Main `Key :: Value-List`: use_oneline is False
+         ('#1', '# Comment-Line: below is a Main `Key :: Value-List`: use_oneline is False'),
          ('list', KVList(False, ['default_value1', 'default_value2']))
       ])
 
@@ -163,7 +173,7 @@ LCONF `Key-Value-List`: uses the **KVList class**
    .. code-block:: python3
 
       example_lconf_template = Root([
-         # Comment-Line: below is a Main `Key :: Value-List`: use_oneline is False
+         ('#1', '# Comment-Line: below is a Main `Key :: Value-List`: with transform_function - use_oneline is False '),
          ('list', KVList(False, ['default_value1', 'default_value2']), transform_function)
       ])
 
@@ -320,10 +330,13 @@ LCONF `Repeated-Block-Identifier`: uses the **BlkI class**
          BlockName1
             key1 :: value1
             key2 :: value2
+            key3 ::
 
          BlockName2
             key1 :: value1
             key2 :: value2
+            key3 :: value3
+
       ___END
 
 .. python-example:: Example `LCONF-Default-Template-Structure`: using class: BlkI
@@ -338,12 +351,13 @@ LCONF `Repeated-Block-Identifier`: uses the **BlkI class**
             # Comment-Line: Dummy Block
             Blk([
                # Comment-Line: Block key value pair
-               ('key1', default_value1),
+               ('key1', 'default_value1`'),
                # Comment-Line: Block key value pair with transform_function
-               ('key2', default_value2, transform_function),
+               ('key2', 'default_value2', transform_function),
+               ('#1', '# Comment: Block key value pair with transform_function and `Empty-KeyValuePair-ReplacementValue`'),
+               ('key3', 'default_value3', transform_function, 'empty_replacement_value3'),
             ])
          )),
-      ])
 
    # `Repeated-Block-Identifier` **min_required_blocks, max_allowed_blocks** set both to 2
 
@@ -355,9 +369,11 @@ LCONF `Repeated-Block-Identifier`: uses the **BlkI class**
             # Comment-Line: Dummy Block
             Blk([
                # Comment-Line: Block key value pair
-               ('key1', 'default_value1'),
+               ('key1', 'default_value1`'),
                # Comment-Line: Block key value pair with transform_function
                ('key2', 'default_value2', transform_function),
+               ('#1', '# Comment: Block key value pair with transform_function and `Empty-KeyValuePair-ReplacementValue`'),
+               ('key3', 'default_value3', transform_function, 'empty_replacement_value3'),
             ])
          )),
       ])
@@ -380,10 +396,12 @@ LCONF `Block-Name` - `Block` (dummy block): uses the **BlkI class**
          BlockName1
             key1 :: value1
             key2 :: value2
+            key3 :: value3
          # Comment-Line: below is another `Block-Name` - `Block` (dummy block)
          BlockName2
             key1 :: value1
             key2 :: value2
+            key3 ::
       ___END
 
 .. python-example:: Example `LCONF-Default-Template-Structure`: using class: Blk
@@ -391,11 +409,16 @@ LCONF `Block-Name` - `Block` (dummy block): uses the **BlkI class**
    .. code-block:: python3
 
       example_lconf_template = Root([
+         # Comment-Line: Root/Main `Repeated-Block-Identifier`: **min_required_blocks set to 2, max_allowed_blocks** set to 5
          ('My_Repeated_Block', BlkI(2, 5,
             # Comment-Line: Dummy Block
             Blk([
-               ('key1', 'default_value1'),
+               # Comment-Line: Block key value pair
+               ('key1', 'default_value1`'),
+               # Comment-Line: Block key value pair with transform_function
                ('key2', 'default_value2', transform_function),
+               ('#1', '# Comment: Block key value pair with transform_function and `Empty-KeyValuePair-ReplacementValue`'),
+               ('key3', 'default_value3', transform_function, 'empty_replacement_value3'),
             ])
          )),
       ])
@@ -405,6 +428,19 @@ LCONF `Block-Name` - `Block` (dummy block): uses the **BlkI class**
 
 LCONF `Key :: Value Pairs` items
 --------------------------------
+Tuple format may vary depending on implementation:
+
+- (KEY, DEFAULT_VALUE)
+- (KEY, DEFAULT_VALUE, TRANSFORM_FUNCTION)
+- (KEY, DEFAULT_VALUE, TRANSFORM_FUNCTION OR None, Empty-KeyValuePair-ReplacementValue)
+
+.. important:: TRANSFORM FUNCTIONS
+
+   Must always be a proper `transform-function` except for `Key :: Value Pairs` which do not use any transformfunction but
+   still an `Empty-KeyValuePair-ReplacementValue`. In such case the one uses `None` instead of any transform-function.
+
+   - (KEY, DEFAULT_VALUE, None, Empty-KeyValuePair-ReplacementValue)
+
 
 .. lconf-example::
 
@@ -435,6 +471,86 @@ LCONF `Key :: Value Pairs` items
          ('key1', 'default_value1', transform_function),
       ])
 
+   # using **a transform function** and **Empty-KeyValuePair-ReplacementValue**
+
+   .. code-block:: python3
+
+      example_lconf_template = Root([
+         ('#1', '# Comment-Line: Root/Main key value pair with transform_function and Empty-KeyValuePair-ReplacementValue'),
+         ('key1', 'default_value1', transform_function, 'empty_replacement_value1'),
+      ])
+
+   # using **no transform function** and **Empty-KeyValuePair-ReplacementValue**
+
+   .. code-block:: python3
+
+      example_lconf_template = Root([
+         ('#1a', '# Comment: Root/Main key value pair with no transform_function and Empty-KeyValuePair-ReplacementValue'),
+         ('#1b', '#          Instead of the transform_function use None'),
+         ('key1', 'default_value1', None, 'empty_replacement_value1'),
+      ])
+
+.. index:: Usage; LCONF: Empty `Key :: Value Pairs` items `Empty-KeyValuePair-ReplacementValue`
+
+Empty `Key :: Value Pairs`
+``````````````````````````
+Empty `Key :: Value Pairs` are supported. One can optionally define an `Empty-KeyValuePair-ReplacementValue` in the
+`LCONF-Default-Template-Structure`.
+
+
+.. lconf-example::
+
+   .. code-block:: lconf
+
+      ___SECTION :: Example LCONF `Key :: Value Pairs` items
+      # Comment-Line: Root/Main key value pair
+      key1 :: value1
+      key2 :: Red
+      key3 ::
+      ___END
+
+.. python-example:: Example `LCONF-Default-Template-Structure`: using Empty `Key :: Value Pairs` with
+                    `Empty-KeyValuePair-ReplacementValue` items
+
+   # using **no transform function but with  `Empty-KeyValuePair-ReplacementValue`**
+      if no transform function is used one MUST set it to `None`
+
+   .. code-block:: python3
+
+      example_lconf_template = Root([
+         ('#1', '# Comment: Root/Main key value pair - no transform function - with  `Empty-KeyValuePair-ReplacementValue`'),
+         ('key1', 'default_value1', None, 'Empty-KeyValuePair-ReplacementValue'),
+         ('key2', 'Blue', None, 'NO-COLOR-DEFINED'),
+         ('key3', 'Blue', None, 'NO-COLOR-DEFINED'),
+      ])
+
+
+.. lconf-example::
+
+   .. code-block:: lconf
+
+      ___SECTION :: Example LCONF `Key :: Value Pairs` items
+      # Comment-Line: Root/Main key value pair
+      key1 :: value1
+      key2 ::
+      key3 ::
+      ___END
+
+   # using **a transform function and with `Empty-KeyValuePair-ReplacementValue`**
+
+   .. code-block:: python3
+
+      example_lconf_template = Root([
+         ('#1', '# Comment Root/Main key value pair - with transform function - with `Empty-KeyValuePair-ReplacementValue`'),
+         ('key1', 'default_value1', transform_function, 'Empty-KeyValuePair-ReplacementValue'),
+         # Comment-Line: in the case below: if `key2` is in the `LCONF source` set to empty: the parsed lconf obj will have
+         # the `Empty-KeyValuePair-ReplacementValue` -1
+         ('key2', 500, lconf_to_int, -1),
+         # Comment-Line: in the case below: if `key3` is by default empty: the parsed lconf obj will have
+         #     the `Empty-KeyValuePair-ReplacementValue` -1 except the `LCONF source` to be parsed has set it to something
+         ('key3', '', lconf_to_float, -999.4),
+      ])
+
 
 .. index:: Usage; LCONF: `Default Comments`
 
@@ -454,6 +570,7 @@ Key and value must start with an `one number sign` **#**
       ('#2', '# this is another `Default Comment Line` which can be emitted'),
       ('key2', 'default_value1'),
    ])
+
 
 LCONF `Default Comments`
 ````````````````````````
@@ -509,7 +626,7 @@ from LCONF.utils import (
 )
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def _deactivated(*args, **kwargs):
    """ Helper: used to raise MethodDeactivatedErr
 
@@ -528,6 +645,10 @@ class Blk(dict):
 
       - :attr:`key_order` (list) the keys in order as initialized inclusive `Default-Comment/Empty Lines`
       - :attr:`key_order_no_comments` (list) the keys in order as initialized exclusive `Default-Comment/Empty Lines`
+      - :attr:`key_empty_replacementvalue` (dict) all keys which have `Empty-KeyValuePair-ReplacementValue`
+
+         - if :ref:`LCONF-Default-Template-Structure <lconf_default_template_structure>` defines an
+           `Empty-KeyValuePair-ReplacementValue` then the key is added with the `Empty-KeyValuePair-ReplacementValue`
 
    :param key_value_list: (list) of tuples: FORMAT: (key, value)
    :raise Err:
@@ -542,6 +663,8 @@ class Blk(dict):
          _temp_key_order = [item[0] for item in key_value_list]
          self.__dict__['key_order'] = _temp_key_order
          self.__dict__['key_order_no_comments'] = [key for key in _temp_key_order if key[0] != '#']
+         self.__dict__['key_empty_replacementvalue'] = {key_value_tuple[0]: key_value_tuple[3] for key_value_tuple in
+            key_value_list if len(key_value_tuple) > 3}
       else:
          raise Err('Blk.__init__()', [
             'key_value_list must be a list of key/value pairs: We got type: <{}>'.format(type(key_value_list)),
@@ -718,6 +841,10 @@ class KVMap(dict):
 
       - :attr:`key_order` (list) the keys in order as initialized inclusive `Default-Comment/Empty Lines`
       - :attr:`key_order_no_comments` (list) the keys in order as initialized exclusive `Default-Comment/Empty Lines`
+      - :attr:`key_empty_replacementvalue` (dict) all keys which have `Empty-KeyValuePair-ReplacementValue`
+
+         - if :ref:`LCONF-Default-Template-Structure <lconf_default_template_structure>` defines an
+           `Empty-KeyValuePair-ReplacementValue` then the key is added with the `Empty-KeyValuePair-ReplacementValue`
 
    :param key_value_list: (list) of tuples: FORMAT: (key, value)
 
@@ -734,6 +861,8 @@ class KVMap(dict):
             _temp_key_order = [item[0] for item in key_value_list]
             self.__dict__['key_order'] = _temp_key_order
             self.__dict__['key_order_no_comments'] = [key for key in _temp_key_order if key[0] != '#']
+            self.__dict__['key_empty_replacementvalue'] = {key_value_tuple[0]: key_value_tuple[3] for key_value_tuple in
+               key_value_list if len(key_value_tuple) > 3}
          else:
             raise Err('KVMap.__init__()', [
                'key_value_list must be a list of key/value pairs and can not be Empty: We got type: <{}>'.format(
@@ -784,6 +913,10 @@ class Root(dict):
 
       - :attr:`key_order` (list) the keys in order as initialized inclusive `Default-Comment/Empty Lines`
       - :attr:`key_order_no_comments` (list) the keys in order as initialized exclusive `Default-Comment/Empty Lines`
+      - :attr:`key_empty_replacementvalue` (dict) all keys which have `Empty-KeyValuePair-ReplacementValue`
+
+         - if :ref:`LCONF-Default-Template-Structure <lconf_default_template_structure>` defines an
+           `Empty-KeyValuePair-ReplacementValue` then the key is added with the `Empty-KeyValuePair-ReplacementValue`
 
    :param key_value_list: (list) of tuples: FORMAT: (key, value)
    :raise Err:
@@ -798,6 +931,8 @@ class Root(dict):
          _temp_key_order = [item[0] for item in key_value_list]
          self.__dict__['key_order'] = _temp_key_order
          self.__dict__['key_order_no_comments'] = [key for key in _temp_key_order if key[0] != '#']
+         self.__dict__['key_empty_replacementvalue'] = {key_value_tuple[0]: key_value_tuple[3] for key_value_tuple in
+            key_value_list if len(key_value_tuple) > 3}
       else:
          raise Err('Root.__init__()', [
             'key_value_list must be a list of key/value pairs: We got type: <{}>'.format(type(key_value_list), ),
@@ -879,7 +1014,7 @@ class ListOT(list):
    :raise Err:
    """
 
-   # noinspection PyTypeChecker,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
+   # noinspection PyTypeChecker,PyUnresolvedReferences
    def __init__(self, column_names, list_of_tuples, column_replace_missing=()):
       """ Constructor
       """
@@ -948,7 +1083,7 @@ class ListOT(list):
             seen[item] = None
       return seen_twice.keys()
 
-   # noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
+   # noinspection PyUnresolvedReferences
    def replace_column_names(self, new_column_names_tuple):
       """ Replaces the `column_names (tuple)` with the new_column_names_tuple
 
@@ -984,7 +1119,7 @@ class ListOT(list):
             '   <{}>'.format(new_column_names_tuple)
          ])
 
-   # noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
+   # noinspection PyUnresolvedReferences
    def this_column_values(self, column_name):
       """ Returns the items of all rows for the column
 

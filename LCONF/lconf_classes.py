@@ -44,7 +44,7 @@ from LCONF.utils import (
 )
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def _deactivated(*args, **kwargs):
    """ Helper: used to raise MethodDeactivatedErr
 
@@ -64,17 +64,25 @@ class LconfBlk(dict):
    **Has additional attributes**:
 
       - :attr:`key_order` (list) the keys in order but exclusive `Default-Comment/Empty Lines`
+      - :attr:`key_empty_replacementvalue` (dict) all keys which have `Empty-KeyValuePair-ReplacementValue`
+
+         - if :ref:`LCONF-Default-Template-Structure <lconf_default_template_structure>` defines an
+           `Empty-KeyValuePair-ReplacementValue` then the key is added with the `Empty-KeyValuePair-ReplacementValue`
+
+           This is needed for :py:func:`LCONF.main_code.lconf_emit` to check if `empty_key_value_pair` is True
 
    :param data: (dict)
    :param key_order_list: (list) ordered data dictionary keys but exclusive `Default-Comment/Empty Lines`
+   :param key_empty_replacementvalue: (dict) all keys which have `Empty-KeyValuePair-ReplacementValue`
    """
 
    # noinspection PyTypeChecker
-   def __init__(self, data, key_order_list):
+   def __init__(self, data, key_order_list, key_empty_replacementvalue):
       """ Constructor
       """
       dict.__init__(self, data)
       self.__dict__['key_order'] = key_order_list
+      self.__dict__['key_empty_replacementvalue'] = key_empty_replacementvalue
 
    def set_class__dict__item(self, key, value):
       """ Sets the class __dict__: key to value: if key did not exist it is added
@@ -165,7 +173,7 @@ class LconfBlkI(dict):
       """
       self.__dict__[key] = value
 
-   # noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
+   # noinspection PyUnresolvedReferences
    def __reduce__(self):
       """ Return state information for pickling
       """
@@ -241,17 +249,25 @@ class LconfKVMap(dict):
    **Has additional attributes**:
 
       - :attr:`key_order` (list) the keys in order but exclusive `Default-Comment/Empty Lines`
+      - :attr:`key_empty_replacementvalue` (dict) all keys which have `Empty-KeyValuePair-ReplacementValue`
+
+         - if :ref:`LCONF-Default-Template-Structure <lconf_default_template_structure>` defines an
+           `Empty-KeyValuePair-ReplacementValue` then the key is added with the `Empty-KeyValuePair-ReplacementValue`
+
+           This is needed for :py:func:`LCONF.main_code.lconf_emit` to check if `empty_key_value_pair` is True
 
    :param data: (dict)
    :param key_order_list: (list) ordered data dictionary keys but exclusive `Default-Comment/Empty Lines`
+   :param key_empty_replacementvalue: (dict) all keys which have `Empty-KeyValuePair-ReplacementValue`
    """
 
    # noinspection PyTypeChecker
-   def __init__(self, data, key_order_list):
+   def __init__(self, data, key_order_list, key_empty_replacementvalue):
       """ Constructor
       """
       dict.__init__(self, data)
       self.__dict__['key_order'] = key_order_list
+      self.__dict__['key_empty_replacementvalue'] = key_empty_replacementvalue
 
    def set_class__dict__item(self, key, value):
       """ Sets the class __dict__: key to value: if key did not exist it is added
@@ -289,23 +305,32 @@ class LconfRoot(dict):
    **Has additional attributes**:
 
       - :attr:`key_order` (list) the keys in order but exclusive `Default-Comment/Empty Lines`
+      - :attr:`key_empty_replacementvalue` (dict) all keys which have `Empty-KeyValuePair-ReplacementValue`
+
+         - if :ref:`LCONF-Default-Template-Structure <lconf_default_template_structure>` defines an
+           `Empty-KeyValuePair-ReplacementValue` then the key is added with the `Empty-KeyValuePair-ReplacementValue`
+
+           This is needed for :py:func:`LCONF.main_code.lconf_emit` to check if `empty_key_value_pair` is True
+
       - :attr:`section_name` (str) defaults to 'missing section name'
       - :attr:`is_parsed` (bool) defaults to False
       - :attr:`has_comments` (bool) defaults to False
 
          - this must be set to True: if it is init with comments: this helps that one does not need to check for comments
-            later on
+           later on
 
    :param data: (dict)
    :param key_order_list: (list) ordered data dictionary keys but exclusive `Default-Comment/Empty Lines`
+   :param key_empty_replacementvalue: (dict) all keys which have `Empty-KeyValuePair-ReplacementValue`
    """
 
    # noinspection PyTypeChecker
-   def __init__(self, data, key_order_list):
+   def __init__(self, data, key_order_list, key_empty_replacementvalue):
       """ Constructor
       """
       dict.__init__(self, data)
       self.__dict__['key_order'] = key_order_list
+      self.__dict__['key_empty_replacementvalue'] = key_empty_replacementvalue
       self.__dict__['section_name'] = 'missing section name'
       self.__dict__['is_parsed'] = False
       self.__dict__['has_comments'] = False
@@ -322,7 +347,13 @@ class LconfRoot(dict):
    def __reduce__(self):
       """ Return state information for pickling
       """
-      return (self.__class__, ([(key, self[key]) for key in self], self.key_order.copy()), self.__dict__.copy())
+      return (self.__class__, (
+         [(key, self[key]) for key in self],
+         self.key_order.copy(),
+         self.key_empty_replacementvalue.copy()
+      ),
+      self.__dict__.copy()
+      )
 
 
    @staticmethod
@@ -421,7 +452,7 @@ class LconfListOT(list):
             seen[item] = None
       return seen_twice.keys()
 
-   # noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
+   # noinspection PyUnresolvedReferences
    def replace_column_names(self, new_column_names_tuple):
       """ Replaces the `column_names (tuple)` with the new_column_names_tuple
 
@@ -457,7 +488,7 @@ class LconfListOT(list):
             '   <{}>'.format(new_column_names_tuple)
          ])
 
-   # noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
+   # noinspection PyUnresolvedReferences
    def this_column_values(self, column_name):
       """ Returns the items of all rows for the column
 

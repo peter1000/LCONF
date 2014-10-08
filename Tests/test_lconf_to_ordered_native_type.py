@@ -44,7 +44,7 @@ from LCONF.main_code import (
    lconf_to_ordered_native_type,
 )
 
-# noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
+# noinspection PyUnresolvedReferences
 from base_examples import (
    get_lconf_section__base_example_template_obj,
    get_lconf_section__base_example_lconf_section_raw_str,
@@ -131,7 +131,7 @@ def test_lconf_to_ordered_native_type_ok1():
       lconf_section__template_obj,
       with_comments=False,
       validate=True)
-      
+
    result_ordered_native_type = lconf_to_ordered_native_type(lconf_obj)
 
    ok_(isinstance(lconf_obj, LconfRoot), msg=None)
@@ -139,10 +139,12 @@ def test_lconf_to_ordered_native_type_ok1():
 
    # RE DUMP AS JSON: NOTE SPECIAL characters might not be handled correctly
    # IMPORTANT: datetime.datetime(2014, 5, 8, 13, 39) is not JSON serializable
-   result_ordered_native_type['key11value_mapping']['mapping11_key2_mapping']['mapping11_key2_nested_mapping_key1'] = '2014-05-08 13:39:00'
+   result_ordered_native_type['key11value_mapping']['mapping11_key2_mapping'][
+      'mapping11_key2_nested_mapping_key1'] = '2014-05-08 13:39:00'
    re_dump_json = json_dumps(result_ordered_native_type, indent=3)
    re_dump_json_lines = re_dump_json.splitlines()
 
+   eq_(re_dump_json_lines[1], '   "key1value_pair": "NOT-DEFINED",', msg=None)
    eq_(re_dump_json_lines[3], '   "key3value_pair": "",', msg=None)
    eq_(re_dump_json_lines[10], '   "key10value_mapping": {', msg=None)
    eq_(re_dump_json_lines[32], '      "mapping10_key7_list": [', msg=None)
@@ -151,7 +153,7 @@ def test_lconf_to_ordered_native_type_ok1():
    eq_(re_dump_json_lines[80], '         "brick",', msg=None)
    eq_(re_dump_json_lines[96], '               "nested_mapping_key1": "franz",', msg=None)
    eq_(re_dump_json_lines[103], '                     "block-item_key1": 12345.99,', msg=None)
-   eq_(re_dump_json_lines[144], '            "blk_mapping_key2": 9999.999,', msg=None)
+   eq_(re_dump_json_lines[144], '            "blk_mapping_key2": -9999999999.055,', msg=None)
    eq_(re_dump_json_lines[224], '               "Nested Repeated Block Identifier": {}', msg=None)
 
    # RE CONVERT TO LCONF - NOTE: there will not be any Block-Identifier

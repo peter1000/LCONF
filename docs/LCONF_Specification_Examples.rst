@@ -20,15 +20,18 @@ LCONF: BASE EXAMPLE
 
       ___SECTION :: BaseEXAMPLE
 
-      # Comment-Line: below: Main `Key :: Value Pair`
-      key1value_pair :: value1
+      # Comment-Line: below Main `Key :: Value Pair` using an `Empty-KeyValuePair-ReplacementValue` "NOT-DEFINED"
+      #               Transform Function is not used and set to None
+      key1value_pair ::
       # Comment-Line: below is a `Key :: Value Pair` with an empty value string: which is skipped
       key2value_pair ::
       key3value_pair ::
       key4value_pair :: True
       key5value_pair :: False
       key6value_pair :: None
-      key7value_pair :: 1456.984
+      # Comment-Line: Using a Transform Function and using an `Empty-KeyValuePair-ReplacementValue` "-94599.5"
+      #               as default value an empty string is set
+      key7value_pair ::
       key8value_pair :: true
       # Comment-Line: Values can be most characters and also longer lines
       key9value_pair :: different characters # \n * | , & @  https://translate.google.com/ translate ਅਨੁਵਾਦ  翻訳する μεταφράζω
@@ -73,8 +76,10 @@ LCONF: BASE EXAMPLE
 
                # Comment-Line: `Block-Name1`
                sky_blue_blk_name1
-                  # Comment-Line:  Block items: `Key :: Value Pair`
-                  blk_item_red :: 135
+                  # Comment-Line:  Block items: `Key :: Value Pairs`
+                  #       Using a Transform Function and using an `Empty-KeyValuePair-ReplacementValue` "0"
+                  #               as default value an empty string is set
+                  blk_item_red ::
                   blk_item_green :: 206
                   blk_item_blue :: 235
 
@@ -122,6 +127,8 @@ LCONF: BASE EXAMPLE
             # Comment-Line: below Block-Item `Key-Value-Mapping` with all 4 defined items
             . MyKey1_mapping
                blk_mapping_key1 :: some text
+               # Comment-Line: Using a default value: "9999.999" and Transform Function
+               #               as well as  using an `Empty-KeyValuePair-ReplacementValue` "-9999999999.99999999"
                blk_mapping_key2 :: 12345.99
                blk_mapping_key3 :: True
 
@@ -163,8 +170,12 @@ LCONF: BASE EXAMPLE
          # Comment-Line: BLK_OBJ2 (Block-Name)
          BLK_OBJ2
 
-            # Comment-Line: below Block-Item `Key-Value-Mapping` with all 4 defined items
+            # Comment-Line: below Block-Item `Key-Value-Mapping` with only some defined items
             . MyKey1_mapping
+               blk_mapping_key1 :: some text
+               # Comment-Line: Using a default value: "9999.999" and Transform Function
+               #               as well as  using an `Empty-KeyValuePair-ReplacementValue` "-9999999999.99999999"
+               blk_mapping_key2 ::
                blk_mapping_key3 :: False
 
                # Comment-Line:  Block-Item `Key-Value-Mapping`: an other nested `Key-Value-Mapping`

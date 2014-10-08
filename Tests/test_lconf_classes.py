@@ -54,16 +54,24 @@ def test_lconf_classes_deactivated_expect_failure():
    lconf_classes_deactivated()
 
 
-# noinspection PyUnresolvedReferences,PyUnresolvedReferences
+# noinspection PyUnresolvedReferences
 def test_lconf_classes0():
    """ Tests: test_lconf_classes0
    """
    print('::: TEST: test_lconf_classes0()')
 
-   obj_ = LconfBlk({'key1': '1', 'key2': '2'}, ['key1', 'key2'])
+   obj_ = LconfBlk([
+      ('key1', 'value1'),
+      ('key2', 'value2'),
+      ('key3', '')
+   ],
+      ['key1', 'key2', 'key3'],
+      {'key2': 'NOT-DEFINED', 'key3': 'NOT-DEFINED'}
+   )
    obj_.set_class__dict__item('mydata', 'new value')
    eq_(obj_.mydata, 'new value', msg=None)
-   eq_(obj_.key_order, ['key1', 'key2'], msg=None)
+   eq_(obj_.key_order, ['key1', 'key2', 'key3'], msg=None)
+   eq_(obj_.key_empty_replacementvalue, {'key3': 'NOT-DEFINED', 'key2': 'NOT-DEFINED'}, msg=None)
 
    obj_.__reduce__()
 
@@ -76,8 +84,8 @@ def test_lconf_classes1():
 
    obj_ = LconfBlkI(
       {
-         'block1': LconfBlk({'block1key1': '1', 'block1key2': '2'}, ['block1key1', '3']),
-         'block2': LconfBlk({'block2key1': '1', 'block2key2': '2'}, ['block2key1', '3'])
+         'block1': LconfBlk({'block1key1': '1', 'block1key2': '2'}, ['block1key1', '3'], {}),
+         'block2': LconfBlk({'block2key1': '1', 'block2key2': '2'}, ['block2key1', '3'], {})
       },
       ['block1', 'block2'],
       -1,
@@ -91,11 +99,11 @@ def test_lconf_classes1():
    eq_(obj_.max_allowed_blocks, -1, msg=None)
    eq_(obj_.has_comments, False, msg=None)
 
-   obj_.__setitem__('block3', LconfBlk({'block3key1': '1', 'block3key2': '2'}, ['block3key1', '3']))
+   obj_.__setitem__('block3', LconfBlk({'block3key1': '1', 'block3key2': '2'}, ['block3key1', '3'], {}))
    eq_(obj_.key_order, ['block1', 'block2', 'block3'], msg=None)
    eq_(obj_['block3'], {'block3key1': '1', 'block3key2': '2'}, msg=None)
 
-   obj_.__setitem__('block3', LconfBlk({'block3key1New': '1', 'block3key2New': '2'}, ['block3key1New', '3']))
+   obj_.__setitem__('block3', LconfBlk({'block3key1New': '1', 'block3key2New': '2'}, ['block3key1New', '3'], {}))
    eq_(obj_['block3'], {'block3key1New': '1', 'block3key2New': '2'}, msg=None)
 
    obj_.__reduce__()
@@ -118,40 +126,71 @@ def test_lconf_classes3():
    """
    print('::: TEST: test_lconf_classes3()')
 
-   obj_ = LconfKVMap({'key': 'value', 'key1': 'value1'}, ['key', 'key1'])
+   obj_ = LconfKVMap({
+      'key1': 'value1',
+      'key2': 'value2',
+      'key3': 'value3'
+   },
+      ['key1', 'key2', 'key3'],
+      {'key2': 'NOT-DEFINED', 'key3': 'NOT-DEFINED'}
+   )
    obj_.set_class__dict__item('mydata', 'new value')
    eq_(obj_.mydata, 'new value', msg=None)
+   eq_(obj_.key_order, ['key1', 'key2', 'key3'], msg=None)
+   eq_(obj_.key_empty_replacementvalue, {'key3': 'NOT-DEFINED', 'key2': 'NOT-DEFINED'}, msg=None)
 
    obj_.__reduce__()
 
 
-# noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
+# noinspection PyUnresolvedReferences
 def test_lconf_classes4():
    """ Tests: test_lconf_classes4
    """
    print('::: TEST: test_lconf_classes4()')
 
-   obj_ = LconfRoot({'key': 'value', 'key1': 'value1'}, ['key', 'key1'])
+   obj_ = LconfRoot({
+      'key1': 'value1',
+      'key2': 'value2',
+      'key3': 'value3'
+   },
+      ['key1', 'key2', 'key3'],
+      {'key2': 'NOT-DEFINED', 'key3': 'NOT-DEFINED'}
+   )
    obj_.set_class__dict__item('mydata', 'new value')
 
    dumps_result = pickle_dumps(obj_, protocol=P_HIGHEST_PROTOCOL)
    obj_from_pickle = LconfRoot.frompickle(dumps_result)
 
    eq_(obj_.mydata, 'new value', msg=None)
-   eq_(obj_.key_order, ['key', 'key1'], msg=None)
+   eq_(obj_.key_order, ['key1', 'key2', 'key3'], msg=None)
+   eq_(obj_.key_empty_replacementvalue, {'key3': 'NOT-DEFINED', 'key2': 'NOT-DEFINED'}, msg=None)
+
    eq_(obj_.mydata, obj_from_pickle.mydata, msg=None)
    eq_(obj_.key_order, obj_from_pickle.key_order, msg=None)
+   eq_(obj_.key_empty_replacementvalue, obj_from_pickle.key_empty_replacementvalue, msg=None)
 
 
-# noinspection PyUnusedLocal
+# noinspection PyUnusedLocal,PyUnresolvedReferences
 @nose_raises(Err)
 def test_lconf_classes5_expect_failure():
    """ Tests: test_lconf_classes5_expect_failure
    """
    print('::: TEST: test_lconf_classes5_expect_failure()')
 
-   obj_ = LconfRoot({'key': 'value', 'key1': 'value1'}, ['key', 'key1'])
+   obj_ = LconfRoot({
+      'key1': 'value1',
+      'key2': 'value2',
+      'key3': 'value3'
+   },
+      ['key1', 'key2', 'key3'],
+      {'key2': 'NOT-DEFINED', 'key3': 'NOT-DEFINED'}
+   )
    obj_.set_class__dict__item('mydata', 'new value')
+   eq_(obj_.mydata, 'new value', msg=None)
+   eq_(obj_.key_order, ['key1', 'key2', 'key3'], msg=None)
+   eq_(obj_.key_empty_replacementvalue, {'key3': 'NOT-DEFINED', 'key2': 'NOT-DEFINED'}, msg=None)
+
+   obj_.__reduce__()
 
    dumps_result = pickle_dumps([('key', 'value'), ('key1', 'value1')], protocol=P_HIGHEST_PROTOCOL)
    obj_from_pickle = LconfRoot.frompickle(dumps_result)

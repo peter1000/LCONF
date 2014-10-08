@@ -141,7 +141,7 @@ def main():
       with_comments=True,
       validate=True
    )
-   lconf_section_emitted_parsed_obj_str = lconf_emit(lconf_parse_obj, onelinelists=LCONF_DEFAULT)
+   lconf_section_emitted_parsed_obj_str = lconf_emit(lconf_parse_obj, onelinelists=LCONF_DEFAULT, empty_key_value_pair=True)
 
    print('\n\n============== EXAMPLE 3: EMIT PARSED LCONF OBJ ==============\n')
    print(lconf_section_emitted_parsed_obj_str)

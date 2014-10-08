@@ -69,11 +69,19 @@ def test_lconf_structure_classes1():
    """
    print('::: TEST: test_lconf_structure_classes1()')
 
-   obj_ = Blk([('key', 'value')])
+   obj_ = Blk([
+      ('key1', 'value1'),
+      ('key2', 'value2', None, 'NOT-DEFINED'),
+      ('key3', '', None, 'NOT-DEFINED')
+   ])
    obj_.set_class__dict__item('mydata', 'new value')
    eq_(obj_.mydata, 'new value', msg=None)
 
    obj_.__reduce__()
+
+   eq_(obj_.mydata, 'new value', msg=None)
+   eq_(obj_.key_order, ['key1', 'key2', 'key3'], msg=None)
+   eq_(obj_.key_empty_replacementvalue, {'key3': 'NOT-DEFINED', 'key2': 'NOT-DEFINED'}, msg=None)
 
 
 @nose_raises(Err)
@@ -151,11 +159,19 @@ def test_lconf_structure_classes9():
    """
    print('::: TEST: test_lconf_structure_classes9()')
 
-   obj_ = KVMap([('key', 'value'), ('key1', 'value1')])
+   obj_ = KVMap([
+      ('key1', 'value1'),
+      ('key2', 'value2', None, 'NOT-DEFINED'),
+      ('key3', '', None, 'NOT-DEFINED')
+   ])
    obj_.set_class__dict__item('mydata', 'new value')
    eq_(obj_.mydata, 'new value', msg=None)
 
    obj_.__reduce__()
+
+   eq_(obj_.mydata, 'new value', msg=None)
+   eq_(obj_.key_order, ['key1', 'key2', 'key3'], msg=None)
+   eq_(obj_.key_empty_replacementvalue, {'key3': 'NOT-DEFINED', 'key2': 'NOT-DEFINED'}, msg=None)
 
 
 @nose_raises(Err)
@@ -173,29 +189,44 @@ def test_lconf_structure_classes11():
    """
    print('::: TEST: test_lconf_structure_classes11()')
 
-   obj_ = Root([('key', 'value'), ('key1', 'value1')])
+   obj_ = Root([
+      ('key1', 'value1'),
+      ('key2', 'value2', None, 'NOT-DEFINED'),
+      ('key3', '', None, 'NOT-DEFINED')
+   ])
    obj_.set_class__dict__item('mydata', 'new value')
    eq_(obj_.mydata, 'new value', msg=None)
 
    obj_.__reduce__()
 
+   eq_(obj_.mydata, 'new value', msg=None)
+   eq_(obj_.key_order, ['key1', 'key2', 'key3'], msg=None)
+   eq_(obj_.key_empty_replacementvalue, {'key3': 'NOT-DEFINED', 'key2': 'NOT-DEFINED'}, msg=None)
 
-# noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
+
+# noinspection PyUnresolvedReferences
 def test_lconf_structure_classes12():
    """ Tests: test_lconf_structure_classes12
    """
    print('::: TEST: test_lconf_structure_classes12()')
 
-   obj_ = Root([('key', 'value'), ('key1', 'value1')])
+   obj_ = Root([
+      ('key1', 'value1'),
+      ('key2', 'value2', None, 'NOT-DEFINED'),
+      ('key3', '', None, 'NOT-DEFINED'),
+   ])
    obj_.set_class__dict__item('mydata', 'new value')
 
    dumps_result = pickle_dumps(obj_, protocol=P_HIGHEST_PROTOCOL)
    obj_from_pickle = Root.frompickle(dumps_result)
 
    eq_(obj_.mydata, 'new value', msg=None)
-   eq_(obj_.key_order, ['key', 'key1'], msg=None)
+   eq_(obj_.key_order, ['key1', 'key2', 'key3'], msg=None)
+   eq_(obj_.key_empty_replacementvalue, {'key3': 'NOT-DEFINED', 'key2': 'NOT-DEFINED'}, msg=None)
+
    eq_(obj_.mydata, obj_from_pickle.mydata, msg=None)
    eq_(obj_.key_order, obj_from_pickle.key_order, msg=None)
+   eq_(obj_.key_empty_replacementvalue, obj_from_pickle.key_empty_replacementvalue, msg=None)
 
 
 # noinspection PyUnusedLocal
@@ -284,7 +315,7 @@ def test_lconf_structure_classes20_expect_failure():
    obj_.replace_column_names('wrong type')
 
 
-# noinspection PyUnresolvedReferences,PyUnresolvedReferences
+# noinspection PyUnresolvedReferences
 def test_lconf_structure_classes21():
    """ Tests: test_lconf_structure_classes21
    """

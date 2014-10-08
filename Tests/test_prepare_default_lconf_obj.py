@@ -42,7 +42,7 @@ from LCONF.transform import (
    lconf_to_pathexpanduser,
 )
 
-# noinspection PyUnresolvedReferences,PyUnresolvedReferences
+# noinspection PyUnresolvedReferences
 from base_examples import (
    get_lconf_section__base_example_template_obj
 )
@@ -60,7 +60,7 @@ def test_lconf_prepare_default_obj__ok0():
       ('#2', '# Comment-Line: `Key :: Value Pair`'),
       ('first', ''),
       ('last', ''),
-      ('sex', ''),
+      ('sex', '', None, 'NOT-DEFINED'),
       ('age', ''),
       ('salary', ''),
       ('#3', '# Comment-Line: `Key-Value-List`'),
@@ -70,7 +70,12 @@ def test_lconf_prepare_default_obj__ok0():
    ])
    default_lconf_obj = lconf_prepare_default_obj(lconf_section__template_obj, with_comments=False)
    eq_(default_lconf_obj.key_order, ['first', 'last', 'sex', 'age', 'salary', 'interests', 'registered'], msg=None)
+   eq_(default_lconf_obj.key_empty_replacementvalue, {'sex': 'NOT-DEFINED'}, msg=None)
+
    eq_(default_lconf_obj.has_comments, False, msg=None)
+
+   eq_(type(default_lconf_obj['age']), str, msg=None)
+   eq_(default_lconf_obj['age'], '', msg=None)
 
    default_lconf_obj = lconf_prepare_default_obj(lconf_section__template_obj, with_comments=True)
    eq_(
@@ -94,8 +99,8 @@ def test_lconf_prepare_default_obj__ok1():
       ('#2', '# Comment-Line: `Key :: Value Pair`'),
       ('first', ''),
       ('last', ''),
-      ('sex', ''),
-      ('age', '', lconf_to_int),
+      ('sex', '', None, 'NOT-DEFINED'),
+      ('age', '', lconf_to_int, -1),
       ('salary', 0.0, lconf_to_float),
       ('#3', '# Comment-Line: `Key-Value-List`'),
       ('interests', KVList(True, [])),
@@ -103,11 +108,15 @@ def test_lconf_prepare_default_obj__ok1():
       ('registered', True, lconf_to_bool),
    ])
    default_lconf_obj = lconf_prepare_default_obj(lconf_section__template_obj, with_comments=False)
-   eq_(type(default_lconf_obj['age']), str, msg=None)
+   eq_(default_lconf_obj.key_empty_replacementvalue, {'age': -1, 'sex': 'NOT-DEFINED'}, msg=None)
+
+   eq_(type(default_lconf_obj['age']), int, msg=None)
+   eq_(default_lconf_obj['age'], -1, msg=None)  # `Empty-KeyValuePair-ReplacementValues`
    eq_(type(default_lconf_obj['salary']), float, msg=None)
    eq_(type(default_lconf_obj['registered']), bool, msg=None)
 
    default_lconf_obj = lconf_prepare_default_obj(lconf_section__template_obj, with_comments=True)
+   eq_(default_lconf_obj.key_empty_replacementvalue, {'age': -1, 'sex': 'NOT-DEFINED'}, msg=None)
 
 
 # noinspection PyUnusedLocal
@@ -129,7 +138,7 @@ def test_lconf_prepare_default_obj__ok2():
       ('#3', '# Comment-Line: `Key-Value-Mapping`'),
       ('favorites', KVMap([
          ('food', ''),
-         ('sport', ''),
+         ('sport', '', None, 'Not-Defined'),
          ('color', ''),
       ])),
       ('#4', '# Comment-Line: `Key :: Value Pair`'),
@@ -139,8 +148,16 @@ def test_lconf_prepare_default_obj__ok2():
    default_lconf_obj = lconf_prepare_default_obj(lconf_section__template_obj, with_comments=False)
    eq_(default_lconf_obj.key_order, ['first', 'last', 'sex', 'age', 'salary', 'favorites', 'registered'], msg=None)
    eq_(default_lconf_obj['favorites'].key_order, ['food', 'sport', 'color'], msg=None)
+   eq_(default_lconf_obj['favorites'].key_empty_replacementvalue, {'sport': 'Not-Defined'}, msg=None)
 
    default_lconf_obj = lconf_prepare_default_obj(lconf_section__template_obj, with_comments=True)
+   eq_(
+      default_lconf_obj.key_order,
+      ['#1', '#2', 'first', 'last', 'sex', 'age', 'salary', '#3', 'favorites', '#4', 'registered'],
+      msg=None
+   )
+   eq_(default_lconf_obj['favorites'].key_order, ['food', 'sport', 'color'], msg=None)
+   eq_(default_lconf_obj['favorites'].key_empty_replacementvalue, {'sport': 'Not-Defined'}, msg=None)
 
 
 def test_lconf_prepare_default_obj__ok3():
@@ -177,7 +194,7 @@ def test_lconf_prepare_default_obj__ok4():
    default_lconf_obj = lconf_prepare_default_obj(lconf_section__template_obj, with_comments=False)
 
 
-# noinspection PyUnusedLocal,PyUnusedLocal
+# noinspection PyUnusedLocal
 def test_lconf_prepare_default_obj__ok5():
    """ Tests: test_lconf_prepare_default_obj__ok5
    """
@@ -202,7 +219,8 @@ def test_lconf_prepare_default_obj__ok6():
       ('#1', ''),
       ('RepeatedBlk1', BlkI(-1, -1,
          Blk([
-            ('MyKey', ''),
+            ('MyKey1', ''),
+            ('MyKey2', '', None, 'Not-Defined'),
          ])
       )),
    ])
@@ -238,6 +256,8 @@ def test_lconf_prepare_default_obj__baseexample_ok():
    lconf_section__template_obj = get_lconf_section__base_example_template_obj()
 
    default_lconf_obj = lconf_prepare_default_obj(lconf_section__template_obj, with_comments=False)
+
+   eq_(default_lconf_obj.key_empty_replacementvalue, {'key7value_pair': -94599.5, 'key1value_pair': 'NOT-DEFINED'}, msg=None)
    eq_(
       default_lconf_obj.key_order,
       [
@@ -258,10 +278,12 @@ def test_lconf_prepare_default_obj__baseexample_ok():
          'key15value_pairlist',
          'key16value_pairlist',
          'key17list_of_tuples',
-         'RepeatedBlk1'
+         'RepeatedBlk1',
       ],
       msg=None
    )
+
+   eq_(default_lconf_obj['key10value_mapping'].key_empty_replacementvalue, {}, msg=None)
    eq_(
       default_lconf_obj['key10value_mapping'].key_order,
       [
@@ -275,7 +297,12 @@ def test_lconf_prepare_default_obj__baseexample_ok():
       ],
       msg=None
    )
+
+   eq_(default_lconf_obj['key1value_pair'], 'NOT-DEFINED', msg=None)
+   eq_(default_lconf_obj['key7value_pair'], -94599.5, msg=None)
+
    eq_(default_lconf_obj['key10value_mapping']['mapping10_key7_list'].column_names, ('name', 'b', 'c'), msg=None)
+   eq_(default_lconf_obj['key11value_mapping']['mapping11_key2_mapping'].key_empty_replacementvalue, {}, msg=None)
    eq_(
       default_lconf_obj['key11value_mapping']['mapping11_key2_mapping'].key_order,
       [
@@ -288,12 +315,12 @@ def test_lconf_prepare_default_obj__baseexample_ok():
    )
 
    default_lconf_obj = lconf_prepare_default_obj(lconf_section__template_obj, with_comments=True)
-
    eq_(
       default_lconf_obj.key_order,
       [
          '#1',
-         '#2',
+         '#2a',
+         '#2b',
          'key1value_pair',
          '#3',
          'key2value_pair',
@@ -302,11 +329,13 @@ def test_lconf_prepare_default_obj__baseexample_ok():
          'key4value_pair',
          'key5value_pair',
          'key6value_pair',
+         '#5a',
+         '#5b',
          'key7value_pair',
          'key8value_pair',
          'key9value_pair',
-         '#5',
          '#6',
+         '#7',
          'key10value_mapping',
          '#16',
          '#17',
@@ -331,10 +360,15 @@ def test_lconf_prepare_default_obj__baseexample_ok():
          'key17list_of_tuples',
          '#40',
          '#41',
-         'RepeatedBlk1'
+         'RepeatedBlk1',
       ],
       msg=None
    )
+   eq_(default_lconf_obj['key1value_pair'], 'NOT-DEFINED', msg=None)
+   eq_(default_lconf_obj['key7value_pair'], -94599.5, msg=None)
+
+   eq_(default_lconf_obj['key10value_mapping']['mapping10_key7_list'].column_names, ('name', 'b', 'c'), msg=None)
+   eq_(default_lconf_obj['key11value_mapping']['mapping11_key2_mapping'].key_empty_replacementvalue, {}, msg=None)
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -350,3 +384,4 @@ if __name__ == '__main__':
    test_lconf_prepare_default_obj__ok7()
 
    test_lconf_prepare_default_obj__baseexample_ok()
+

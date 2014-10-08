@@ -5,6 +5,50 @@ Release History
 
 .. _whats-new:
 
+
+Version 7.0.0     2014-10-08
+============================
+
+Features:
+---------
+
+   - some adjustments to the : `LCONF_Specification`
+
+   - implementation of: LCONF_Specification-7.0 (raised version to reflect the LCONF_Specification version)
+
+      .. note::
+
+         `LCONF Specification 7.0` should be backwards compatible with version 6.0
+
+         - adds support for setting: optional `Empty-KeyValuePair-ReplacementValues` in the
+
+            :ref:`LCONF-Default-Template-Structure <lconf_default_template_structure>`
+
+            - for instance: a integer value is expected but one wants for empty `LCONF Key :: Value Pairs` to return -1
+
+   - new optional argument `empty_key_value_pair` for :py:func:`LCONF.main_code.lconf_emit`
+   - new attributes: `key_empty_replacementvalue` for
+
+      - :py:class:`LCONF.lconf_structure_classes.Root`
+      - :py:class:`LCONF.lconf_structure_classes.Blk`
+      - :py:class:`LCONF.lconf_structure_classes.KVMap`
+
+      - :py:class:`LCONF.lconf_classes.LconfRoot`
+      - :py:class:`LCONF.lconf_classes.LconfBlk`
+      - :py:class:`LCONF.lconf_classes.LconfKVMap`
+
+
+Fixes/Other Changes:
+--------------------
+
+   - updated Required Software
+   - updated requirement:
+
+      - PSphinxTheme>=2.0.2
+
+   - FIXED: small text error in :py:func:`LCONF.main_code.lconf_parse_section_lines`
+
+
 Version 6.1.1     2014-10-04
 ============================
 
@@ -14,9 +58,9 @@ Fixes/Other Changes:
    - updated requirement:
 
       - PSphinxTheme>=2.0.1
-      
+
    - updated Required Software
-      
+
    - updated: updated docs: Projects using LCONF
 
 
@@ -57,7 +101,7 @@ Version 6.0.0     2014-09-26
 Features:
 ---------
 
-   - implementation of: LCONF_Specification-6.0.rst (raised version to reflect the LCONF_Specification version)
+   - implementation of: LCONF_Specification-6.0 (raised version to reflect the LCONF_Specification version)
 
       .. note::
 

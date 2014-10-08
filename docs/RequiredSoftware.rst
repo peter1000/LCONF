@@ -12,7 +12,7 @@ Required Software
 
 .. note:: other versions might also work but this are the once used for development
 
-- Python >= 3.4.2rc1+ (3.4.2rc1+  compiled 20141004)
+- Python >= 3.4.2rc1+ (3.4.2rc1+  compiled 20141007)
 
    - `<http://www.python.org/>`_
 
@@ -34,7 +34,7 @@ Required Software
 
    - `<http://nedbatchelder.com/code/coverage>`_
 
-- PSphinxTheme >=2.0.1  (for documentation generation)
+- PSphinxTheme >=2.0.2  (for documentation generation)
 
    - `<https://github.com/peter1000/PSphinxTheme>`_
 

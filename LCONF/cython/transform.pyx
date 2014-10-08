@@ -102,7 +102,8 @@ def lconf_to_float(number_str, extra_err_info):
          'number_str must contain a valid number to be cast to python float().  We got: <{}>'.format(
             number_str
          ),
-         '    extra_err_info: {}'.format(extra_err_info)
+         '    extra_err_info: {}'.format(extra_err_info),
+         '    ValueError: {}'.format(err)
       ])
 
 
